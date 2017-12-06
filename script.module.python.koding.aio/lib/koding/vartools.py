@@ -796,3 +796,74 @@ dialog.ok('PYTHON KODING STRING','The string [COLOR=dodgerblue]30825[/COLOR] pul
         mystring = xbmc.getLocalizedString(code)
     return mystring
 #----------------------------------------------------------------
+# TUTORIAL #
+def Remove_Formatting(string, color=True, bold=True, italic=True, spaces=True, dots=True, dashes=True):
+    """
+This will cleanup a Kodi string, it can remove color, bold and italic tags as well as
+preceding spaces, dots and dashes. Particularly useful if you want to show the names of
+add-ons in alphabetical order where add-on names have deliberately had certain formatting
+added to them to get them to always show at the top of lists.
+
+CODE: Remove_Formatting(string, [color, bold, italic, spaces, dots, dashes])
+
+AVAILABLE PARAMS:
+
+    (*) string  -  This is string you want to remove formatting from.
+
+    color  -  By default this is set to true and all references to the color tag
+    will be removed, set this to false if you don't want color formatting removed.
+
+    bold  -  By default this is set to true and all references to the bold tag
+    will be removed, set this to false if you don't want bold formatting removed.
+
+    italic  -  By default this is set to true and all references to the italic tag
+    will be removed, set this to false if you don't want italic formatting removed.
+
+    spaces  -  By default this is set to true and any spaces at the start of the text
+    will be removed, set this to false if you don't want the spaces removed.
+
+    dots  -  By default this is set to true and any dots (.) at the start of the text
+    will be removed, set this to false if you don't want the dots removed.
+
+    dashes  -  By default this is set to true and any dashes (-) at the start of the text
+    will be removed, set this to false if you don't want the dashes removed.
+
+EXAMPLE CODE:
+mystring = '...-- [I]This[/I]  is the [COLOR dodgerblue]ORIGINAL[/COLOR] [B][COLOR cyan]TEXT[/COLOR][/B]'
+dialog.ok('[COLOR gold]ORIGINAL TEXT[/COLOR]','Below is the original text we\'re going to try and clean up:[CR]%s'%mystring)
+dialog.ok('[COLOR gold]DOTS REMOVED[/COLOR]','[COLOR gold]Original:[/COLOR][CR]%s[CR][COLOR gold]This is with only dots set to True:[/COLOR][CR]%s'%(mystring,koding.Remove_Formatting(mystring, color=False, bold=False, italic=False, spaces=False, dots=True, dashes=False)))
+dialog.ok('[COLOR gold]DOTS & DASHES REMOVED[/COLOR]','[COLOR gold]Original:[/COLOR][CR]%s[CR][COLOR gold]This is with dots & dashes set to True:[/COLOR][CR]%s'%(mystring,koding.Remove_Formatting(mystring, color=False, bold=False, italic=False, spaces=False, dots=True, dashes=True)))
+dialog.ok('[COLOR gold]DOTS, DASHES & SPACES REMOVED[/COLOR]','[COLOR gold]Original:[/COLOR][CR]%s[CR][COLOR gold]This is with dots, dashes & spaces set to True:[/COLOR][CR]%s'%(mystring,koding.Remove_Formatting(mystring, color=False, bold=False, italic=False, spaces=True, dots=True, dashes=True)))
+dialog.ok('[COLOR gold]ALL FORMATTING REMOVED[/COLOR]','[COLOR gold]Original:[/COLOR][CR]%s[CR][COLOR gold]This is with all options set to True:[/COLOR][CR]%s'%(mystring,koding.Remove_Formatting(mystring)))
+~"""
+    import re
+    if color:
+        if '[COLOR' in string:
+            string = string.replace('[/COLOR]','')
+            colorlist = re.compile(r'\[COLOR(.+?)\]').findall(string)
+            for colors in colorlist:
+                string = string.replace('[COLOR%s]'%colors,'')
+    if spaces:
+        string = string.strip()
+    if bold:
+        string = string.replace('[B]','').replace('[/B]','')
+    if spaces:
+        string = string.strip()
+    if italic:
+        string = string.replace('[I]','').replace('[/I]','')
+    if spaces:
+        string = string.strip()
+    if dots:
+        while string.startswith('.'):
+            string = string[1:]
+    if spaces:
+        string = string.strip()
+    if dashes:
+        while string.startswith('-'):
+            string = string[1:]
+    if spaces:
+        string = string.strip()
+    if spaces:
+        string = string.strip()
+
+    return string

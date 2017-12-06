@@ -1,3 +1,6 @@
+v.0.9.9.1.2:
+- Added Remove_Formatting() function, this can remove any color, bold and italic tags as well as removing any preceding characters such as spaces, dots and dashes
+
 v.0.9.9.1.1:
 - Removed excessive logging in addons.py
 

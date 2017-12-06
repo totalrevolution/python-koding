@@ -13,7 +13,7 @@
 			<posy>0</posy>
 			<width>1280</width>
 			<height>720</height>
-			<texture border="40" colordiffuse="e5120B52">DialogBack.png</texture>
+			<texture border="40" colordiffuse="e5000000">DialogBack.png</texture>
 		</control>
 		<control type="image">
 			<description>Dialog Header image</description>
@@ -33,7 +33,7 @@
 			<label>$INFO[Window(Home).Property(PK_Header)]</label>
 			<align>center</align>
 			<aligny>center</aligny>
-			<textcolor>FF63D0FF</textcolor>
+			<textcolor>FFFFF71B</textcolor>
 			<shadowcolor>FF000000</shadowcolor>
 		</control>
 		<control type="button" id="98">
@@ -89,12 +89,12 @@
                 <posy>640</posy>
                 <width>200</width>
                 <height>40</height>
-                <label>Decline</label>
-                <texturefocus colordiffuse="ffFFE76E">DialogBack.png</texturefocus>
-                <texturenofocus colordiffuse="7f49526B">DialogBack.png</texturenofocus>
+                <label>Basic Install</label>
+                <texturefocus colordiffuse="ff4E91CF">DialogBack.png</texturefocus>
+                <texturenofocus colordiffuse="7f586381">DialogBack.png</texturenofocus>
                 <font>font12_title</font>
                 <textcolor>FFFFFFFF</textcolor>
-                <focusedcolor>FFFF8E1C</focusedcolor>
+                <focusedcolor>FFFFC53D</focusedcolor>
                 <align>center</align>
                 <onleft>99</onleft>
                 <onright>101</onright>
@@ -106,12 +106,12 @@
                 <posy>640</posy>
                 <width>200</width>
                 <height>40</height>
-                <label>Accept</label>
-                <texturefocus colordiffuse="ffFFE76E">DialogBack.png</texturefocus>
-                <texturenofocus colordiffuse="7f49526B">DialogBack.png</texturenofocus>
+                <label>Install YouTube</label>
+                <texturefocus colordiffuse="ff4E91CF">DialogBack.png</texturefocus>
+                <texturenofocus colordiffuse="7f586381">DialogBack.png</texturenofocus>
                 <font>font12_title</font>
                 <textcolor>FFFFFFFF</textcolor>
-                <focusedcolor>FFFF8E1C</focusedcolor>
+                <focusedcolor>FFFFC53D</focusedcolor>
                 <align>center</align>
                 <onleft>100</onleft>
                 <onright>102</onright>
