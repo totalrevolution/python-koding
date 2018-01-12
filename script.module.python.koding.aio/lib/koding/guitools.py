@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 
 # script.module.python.koding.aio
-# Python Koding AIO (c) by whufclee (info@totalrevolution.tv)
+# Python Koding AIO (c) by TOTALREVOLUTION LTD (support@trmc.freshdesk.com)
 
 # Python Koding AIO is licensed under a
 # Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
@@ -9,9 +9,6 @@
 # You should have received a copy of the license along with this
 # work. If not, see http://creativecommons.org/licenses/by-nc-nd/4.0.
 
-# IMPORTANT: If you choose to use the special noobsandnerds features which hook into their server
-# please make sure you give approptiate credit in your add-on description (noobsandnerds.com)
-# 
 # Please make sure you've read and understood the license, this code can NOT be used commercially
 # and it can NOT be modified and redistributed. If you're found to be in breach of this license
 # then any affected add-ons will be blacklisted and will not be able to work on the same system
@@ -22,9 +19,9 @@ import sys
 import xbmc
 import xbmcgui
 from systemtools import Last_Error
-
+from filetools import Physical_Path
 dialog      = xbmcgui.Dialog()
-koding_path = xbmc.translatePath("special://home/addons/script.module.python.koding.aio")
+koding_path = Physical_Path("special://home/addons/script.module.python.koding.aio")
 #----------------------------------------------------------------    
 # TUTORIAL #
 def Browse_To_Folder(header='Select the folder you want to use', path = 'special://home'):
@@ -72,10 +69,10 @@ AVAILABLE PARAMS:
     other archive files. By default this is set to False.
 
 EXAMPLE CODE:
-dialog.ok('[COLOR gold]BROWSE TO FILE 1[/COLOR]','We will now browse to your addons folder with browse_in_archives set to [COLOR dodgerblue]False[/COLOR]. Try clicking on a zip file if you can find one (check packages folder).')
+dialog.ok('BROWSE TO FILE 1','We will now browse to your addons folder with browse_in_archives set to [COLOR dodgerblue]False[/COLOR]. Try clicking on a zip file if you can find one (check packages folder).')
 folder = koding.Browse_To_File(header='Choose a file you want to use', path='special://home/addons')
 dialog.ok('FOLDER DETAILS','File path: [COLOR=dodgerblue]%s[/COLOR]'%folder)
-dialog.ok('[COLOR gold]BROWSE TO FILE 2[/COLOR]','We will now browse to your addons folder with browse_in_archives set to [COLOR dodgerblue]True[/COLOR]. Try clicking on a zip file if you can find one (check packages folder).')
+dialog.ok('BROWSE TO FILE 2','We will now browse to your addons folder with browse_in_archives set to [COLOR dodgerblue]True[/COLOR]. Try clicking on a zip file if you can find one (check packages folder).')
 folder = koding.Browse_To_File(header='Choose a file you want to use', path='special://home/addons', browse_in_archives=True)
 dialog.ok('FOLDER DETAILS','File path: [COLOR=dodgerblue]%s[/COLOR]'%folder)
 ~"""

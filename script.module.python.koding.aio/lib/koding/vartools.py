@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 
 # script.module.python.koding.aio
-# Python Koding AIO (c) by whufclee (info@totalrevolution.tv)
+# Python Koding AIO (c) by TOTALREVOLUTION LTD (support@trmc.freshdesk.com)
 
 # Python Koding AIO is licensed under a
 # Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
@@ -9,9 +9,6 @@
 # You should have received a copy of the license along with this
 # work. If not, see http://creativecommons.org/licenses/by-nc-nd/4.0.
 
-# IMPORTANT: If you choose to use the special noobsandnerds features which hook into their server
-# please make sure you give approptiate credit in your add-on description (noobsandnerds.com)
-# 
 # Please make sure you've read and understood the license, this code can NOT be used commercially
 # and it can NOT be modified and redistributed. If you're found to be in breach of this license
 # then any affected add-ons will be blacklisted and will not be able to work on the same system
@@ -25,12 +22,12 @@ import xbmc
 import xbmcaddon
 import xbmcgui
 
-import filetools
+from filetools import Physical_Path
 
-HOME = xbmc.translatePath('special://home')
+HOME = Physical_Path('special://home')
 #----------------------------------------------------------------
 # TUTORIAL #
-def ASCII_Check(sourcefile=xbmc.translatePath('special://home'), dp=False):
+def ASCII_Check(sourcefile=HOME, dp=False):
     """
 Return a list of files found containing non ASCII characters in the filename.
 
@@ -46,7 +43,7 @@ AVAILABLE PARAMS:
     and send through as the param.
         
 EXAMPLE CODE:
-home = xbmc.translatePath('special://home')
+home = koding.Physical_Path('special://home')
 progress = xbmcgui.DialogProgress()
 progress.create('ASCII CHECK')
 my_return = ASCII_Check(sourcefile=home, dp=progress)
@@ -96,9 +93,9 @@ AVAILABLE PARAMS:
         
 EXAMPLE CODE:
 current_text = '" This is a string of text which should be cleaned up   /'
-dialog.ok('[COLOR gold]ORIGINAL STRING[/COLOR]', '[COLOR dodgerblue]%s[/COLOR]\n\nPress OK to view the cleaned up version.'%current_text)
+dialog.ok('ORIGINAL STRING', '[COLOR dodgerblue]%s[/COLOR]\n\nPress OK to view the cleaned up version.'%current_text)
 clean_text = koding.Cleanup_String(current_text)
-dialog.ok('[COLOR gold]CLEAN STRING[/COLOR]', '[COLOR dodgerblue]%s[/COLOR]'%clean_text)
+dialog.ok('CLEAN STRING', '[COLOR dodgerblue]%s[/COLOR]'%clean_text)
 ~"""
     import urllib
     bad_chars = ['/','\\',':',';','"',"'"]
@@ -209,7 +206,7 @@ dialog.ok('NEW TEXT', mytext)
     return newname
 #----------------------------------------------------------------
 # TUTORIAL #
-def Convert_Special(filepath=xbmc.translatePath('special://home'), string=False, quoted=True):
+def Convert_Special(filepath=HOME, string=False, quoted=True):
     """
 Convert physcial paths stored in text files to their special:// equivalent or
 replace instances of physical paths to special in a string sent through.
@@ -220,22 +217,23 @@ AVAILABLE PARAMS:
 
     filepath  -  This is the path you want to scan, by default it's set to the Kodi HOME directory.
     
-    string    -  By default this is set to False, if you set to True you will get the
-                 string of your 'filepath' returned with any reference to physical
-                 path replaced with special://
+    string  -  By default this is set to False which means it will convert all instances found of
+    the physical paths to their special equivalent. The scan will convert all instances in all filenames
+    ending in ini, xml, hash, properties. If you set this value to True you will get a return of your
+    'filepath' string and no files will be altered.
 
-    quoted    -  By default this is set to true, this means the return you get will be converted
-                 with urllib.quote_plus(). This is ideal if you need to get a string you can send
-                 through as a path for routing.
+    quoted  -  By default this is set to true, this means the return you get will be converted
+    with urllib.quote_plus(). This is ideal if you need to get a string you can send
+    through as a path for routing.
 
 EXAMPLE CODE:
-path = xbmc.translatePath('special://profile')
-dialog.ok('[COLOR gold]ORIGINAL PATH[/COLOR]','Let\'s convert this path to it\'s special equivalent:\n[COLOR dodgerblue]%s[/COLOR]'%path)
-path = Convert_Special(filepath=path,string=True)
-dialog.ok('[COLOR gold]CONVERTED PATH[/COLOR]','This is the converted path:\n[COLOR dodgerblue]%s[/COLOR]'%path)
-if dialog.yesno('[COLOR gold]CONVERT PHYSICAL PATHS[/COLOR]','We will now run through your Kodi folder converting all physical paths to their special:// equivalent in xml/hash/properties/ini files.\nDo you want to continue?'):
+path = koding.Physical_Path('special://profile')
+dialog.ok('ORIGINAL PATH','Let\'s convert this path to it\'s special equivalent:\n[COLOR dodgerblue]%s[/COLOR]'%path)
+path = Convert_Special(filepath=path,string=True,quoted=False)
+dialog.ok('CONVERTED PATH','This is the converted path:\n[COLOR dodgerblue]%s[/COLOR]'%path)
+if dialog.yesno('CONVERT PHYSICAL PATHS','We will now run through your Kodi folder converting all physical paths to their special:// equivalent in xml/hash/properties/ini files.\nDo you want to continue?'):
     koding.Convert_Special()
-    dialog.ok('[COLOR gold]SUCCESS[/COLOR]','Congratulations, all references to your physical paths have been converted to special:// paths.')
+    dialog.ok('SUCCESS','Congratulations, all references to your physical paths have been converted to special:// paths.')
 ~"""
     import urllib
     from filetools import Text_File
@@ -337,8 +335,9 @@ AVAILABLE PARAMS:
 
 EXAMPLE CODE:
 textsearch = 'This is some text so lets have a look and see if we can find the words "lets have a look"'
+dialog.ok('ORIGINAL TEXT','Below is the text we\'re going to use for our search:','[COLOR dodgerblue]%s[/COLOR]'%textsearch)
 search_result = koding.Find_In_Text(textsearch, 'text so ', ' and see')
-dialog.ok('SEARCH RESULT','You searched for the start string of "text so " and the end string of " and see". Your result is: %s' % search_result[0])
+dialog.ok('SEARCH RESULT','You searched for the start string of "text so " and the end string of " and see".','','Your result is: [COLOR dodgerblue]%s[/COLOR]' % search_result[0])
 
 # Please note: we know for a fact there is only one result which is why we're only accessing list item zero.
 # If we were expecting more than one return we would probably do something more useful and loop through in a for loop.
@@ -389,14 +388,14 @@ EXAMPLE CODE:
 my_search = 'west ham utd'
 my_list = ['west ham united', 'west ham utd', 'rangers fc', 'Man City', 'West Ham United FC', 'Fulham FC', 'West Ham f.c']
 my_replace = (["united","utd"], ["fc",""], ["f.c",""])
-dialog.ok('[COLOR gold]FUZZY SEARCH[/COLOR]','Let\'s search for matches similar to "west ham utd" in the list:\n\n%s'%my_list)
+dialog.ok('FUZZY SEARCH','Let\'s search for matches similar to "west ham utd" in the list:\n\n%s'%my_list)
 search_result = koding.Fuzzy_Search(my_search, my_list, my_replace)
 good = ', '.join(search_result)
 bad = ''
 for item in my_list:
     if item not in search_result:
         bad += item+', '
-dialog.ok('[COLOR gold]RESULTS FOUND[/COLOR]','[COLOR=dodgerblue]SEARCH:[/COLOR] %s\n[COLOR=lime]GOOD:[/COLOR] %s\n[COLOR=cyan]BAD:[/COLOR] %s'%(my_search,good,bad))
+dialog.ok('RESULTS FOUND','[COLOR=dodgerblue]SEARCH:[/COLOR] %s\n[COLOR=lime]GOOD:[/COLOR] %s\n[COLOR=cyan]BAD:[/COLOR] %s'%(my_search,good,bad))
 ~"""
     final_array = []
     newsearch = search_string.lower().strip().replace(' ','')
@@ -437,7 +436,7 @@ AVAILABLE PARAMS:
 
 EXAMPLE CODE:
 mylist = ['plugin.test-1.0.zip','plugin.test-0.7.zip','plugin.test-1.1.zip','plugin.test-0.9.zip']
-dialog.ok('[COLOR=gold]OUR LIST OF FILES[/COLOR]', '[COLOR=dodgerblue]%s[/COLOR]\n[COLOR=powderblue]%s[/COLOR]\n[COLOR=dodgerblue]%s[/COLOR]\n[COLOR=powderblue]%s[/COLOR]'%(mylist[0],mylist[1],mylist[2],mylist[3]))
+dialog.ok('OUR LIST OF FILES', '[COLOR=dodgerblue]%s[/COLOR]\n[COLOR=powderblue]%s[/COLOR]\n[COLOR=dodgerblue]%s[/COLOR]\n[COLOR=powderblue]%s[/COLOR]'%(mylist[0],mylist[1],mylist[2],mylist[3]))
 
 highest = Highest_Version(content=mylist,start_point='-',end_point='.zip')
 dialog.ok('HIGHEST VERSION', 'The highest version number of your files is:','[COLOR=dodgerblue]%s[/COLOR]'%highest)
@@ -493,7 +492,7 @@ AVAILABLE PARAMS:
     through a string rather than a path set this to True.
 
 EXAMPLE CODE:
-home = xbmc.translatePath('special://home')
+home = koding.Physical_Path('special://home')
 home_md5 = koding.md5_check(home)
 dialog.ok('md5 Check', 'The md5 of your home folder is:', '[COLOR=dodgerblue]%s[/COLOR]'%home_md5)
 
@@ -572,15 +571,15 @@ AVAILABLE PARAMS:
     items by sending through ['link','title','thumb']
 
 EXAMPLE CODE:
-dialog.ok('DICTIONARY OF ITEMS','We will now attempt to return a list of details pulled from the noobsandnerds repository addon.xml (NaN repo needs to be installed for this to work).')
-xml_file = xbmc.translatePath('special://home/addons/repository.noobsandnerds/addon.xml')
+dialog.ok('DICTIONARY OF ITEMS','We will now attempt to return a list of the source details pulled from the official Kodi repository addon.xml')
+xml_file = koding.Physical_Path('special://xbmc/addons/repository.xbmc.org/addon.xml')
 xml_file = koding.Text_File(xml_file,'r')
-repo_details = koding.Parse_XML(source=xml_file, block='dir', tags=['info','checksum','datadir'])
+xbmc.log(xml_file,2)
+repo_details = koding.Parse_XML(source=xml_file, block='extension', tags=['info','checksum','datadir'])
 counter = 0
 for item in repo_details:
-    dialog.ok( '[COLOR gold]REPO %s[/COLOR]'%(counter+1),'info path: %s\nchecksum path: %s\ndatadir: %s' % (repo_details[counter]['info'],repo_details[counter]['checksum'],repo_details[counter]['datadir']) )
+    dialog.ok( 'REPO %s'%(counter+1),'info path: [COLOR dodgerblue]%s[/COLOR]\nchecksum path: [COLOR dodgerblue]%s[/COLOR]\ndatadir: [COLOR dodgerblue]%s[/COLOR]' % (repo_details[counter]['info'],repo_details[counter]['checksum'],repo_details[counter]['datadir']) )
     counter += 1
-dialog.ok('[COLOR cyan]FINAL NOTICE[/COLOR]','You probably didn\'t notice but the details of the main noobsandnerds repo paths did NOT show, this is because they are not encapsulated in <dir> tags which we used as the \'block\' to check for.')
 ~"""
     from BeautifulSoup import BeautifulSoup
     soup = BeautifulSoup(source)
@@ -594,6 +593,7 @@ dialog.ok('[COLOR cyan]FINAL NOTICE[/COLOR]','You probably didn\'t notice but th
                 newsoup = BeautifulSoup(str(myblock))
                 newtag  = newsoup.findAll(tag)
                 if newtag:
+                    xbmc.log(repr(newtag),2)
 
                 # If only one instance is found we add to dict as a plain string
                     if len(newtag)==1:
@@ -608,9 +608,7 @@ dialog.ok('[COLOR cyan]FINAL NOTICE[/COLOR]','You probably didn\'t notice but th
                             mynewtag  = mynewtag.split(r'<')[0]
                             tag_array.append(mynewtag)
                         newtag = tag_array
-                else:
-                    newtag = ''
-                my_dict[tag] = newtag
+                    my_dict[tag] = newtag
             my_return.append(my_dict)
     return my_return
 #----------------------------------------------------------------
@@ -638,8 +636,8 @@ AVAILABLE PARAMS:
     so if you want to access the 2nd table on the page it will be table=1.
 
 EXAMPLE CODE:
-dialog.ok('[COLOR gold]TABLE DATA[/COLOR]','Let\'s pull some details from the proxy list table found at:\nhttps://hidemy.name/en/proxy-list/.')
-proxies = koding.Table_Convert(url='https://hidemy.name/en/proxy-list/', contents={"ip":0,"port":1}, table=0)
+dialog.ok('TABLE DATA','Let\'s pull some details from the proxy list table found at:\nhttps://free-proxy-list.net.')
+proxies = koding.Table_Convert(url='https://free-proxy-list.net', contents={"ip":0,"port":1}, table=0)
 mytext = '[COLOR dodgerblue]Here are some proxies:[/COLOR]\n'
 for item in proxies:
     mytext += '\nIP: %s\nPort: %s\n[COLOR steelblue]----------------[/COLOR]'%(item['ip'],item['port'])
@@ -690,7 +688,7 @@ AVAILABLE PARAMS:
 
 EXAMPLE CODE:
 raw_string = 'This is some test code, let\'s take a look and see what happens if we split this up into lines of 20 chars per line'
-dialog.ok('[COLOR gold]ORIGINAL TEXT[/COLOR]',raw_string)
+dialog.ok('ORIGINAL TEXT',raw_string)
 my_list = koding.Split_Lines(raw_string,20)
 koding.Text_Box('List of lines',str(my_list))
 ~"""    
@@ -735,15 +733,15 @@ AVAILABLE PARAMS:
 
 EXAMPLE CODE:
 my_list = ['one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen']
-dialog.ok('[COLOR gold]SPLIT LIST 1[/COLOR]','We will now attempt to split the following list into blocks of 5:\n%s'%my_list)
+dialog.ok('SPLIT LIST 1','We will now attempt to split the following list into blocks of 5:\n%s'%my_list)
 newlist = koding.Split_List(source=my_list, split_point=5)
-dialog.ok('[COLOR gold]RESULTS[/COLOR]','Our returned var:\n%s'%newlist)
-dialog.ok('[COLOR gold]SPLIT LIST 2[/COLOR]','We will now attempt to split the same list at every 5th item position and only show items [0,1,3]')
+dialog.ok('RESULTS','Our returned var:\n%s'%newlist)
+dialog.ok('SPLIT LIST 2','We will now attempt to split the same list at every 5th item position and only show items [0,1,3]')
 newlist = koding.Split_List(source=my_list, split_point=5, include=[0,1,3])
-dialog.ok('[COLOR gold]RESULTS[/COLOR]','Our returned var:\n%s'%newlist)
-dialog.ok('[COLOR gold]SPLIT LIST 3[/COLOR]','We will now attempt to split the same list at every 5th item position and only show the first 3 items.')
+dialog.ok('RESULTS','Our returned var:\n%s'%newlist)
+dialog.ok('SPLIT LIST 3','We will now attempt to split the same list at every 5th item position and only show the first 3 items.')
 newlist = koding.Split_List(source=my_list, split_point=5, include=3)
-dialog.ok('[COLOR gold]RESULTS[/COLOR]','Our returned var:\n%s'%newlist)
+dialog.ok('RESULTS','Our returned var:\n%s'%newlist)
 ~"""
     if include == 'all':
         return [source[x:x+split_point] for x in range(0, len(source), split_point)]
@@ -830,11 +828,11 @@ AVAILABLE PARAMS:
 
 EXAMPLE CODE:
 mystring = '...-- [I]This[/I]  is the [COLOR dodgerblue]ORIGINAL[/COLOR] [B][COLOR cyan]TEXT[/COLOR][/B]'
-dialog.ok('[COLOR gold]ORIGINAL TEXT[/COLOR]','Below is the original text we\'re going to try and clean up:[CR]%s'%mystring)
-dialog.ok('[COLOR gold]DOTS REMOVED[/COLOR]','[COLOR gold]Original:[/COLOR][CR]%s[CR][COLOR gold]This is with only dots set to True:[/COLOR][CR]%s'%(mystring,koding.Remove_Formatting(mystring, color=False, bold=False, italic=False, spaces=False, dots=True, dashes=False)))
-dialog.ok('[COLOR gold]DOTS & DASHES REMOVED[/COLOR]','[COLOR gold]Original:[/COLOR][CR]%s[CR][COLOR gold]This is with dots & dashes set to True:[/COLOR][CR]%s'%(mystring,koding.Remove_Formatting(mystring, color=False, bold=False, italic=False, spaces=False, dots=True, dashes=True)))
-dialog.ok('[COLOR gold]DOTS, DASHES & SPACES REMOVED[/COLOR]','[COLOR gold]Original:[/COLOR][CR]%s[CR][COLOR gold]This is with dots, dashes & spaces set to True:[/COLOR][CR]%s'%(mystring,koding.Remove_Formatting(mystring, color=False, bold=False, italic=False, spaces=True, dots=True, dashes=True)))
-dialog.ok('[COLOR gold]ALL FORMATTING REMOVED[/COLOR]','[COLOR gold]Original:[/COLOR][CR]%s[CR][COLOR gold]This is with all options set to True:[/COLOR][CR]%s'%(mystring,koding.Remove_Formatting(mystring)))
+dialog.ok('ORIGINAL TEXT','Below is the original text we\'re going to try and clean up:[CR]%s'%mystring)
+dialog.ok('DOTS REMOVED','[COLOR gold]Original:[/COLOR][CR]%s[CR][COLOR gold]This is with only dots set to True:[/COLOR][CR]%s'%(mystring,koding.Remove_Formatting(mystring, color=False, bold=False, italic=False, spaces=False, dots=True, dashes=False)))
+dialog.ok('DOTS & DASHES REMOVED','[COLOR gold]Original:[/COLOR][CR]%s[CR][COLOR gold]This is with dots & dashes set to True:[/COLOR][CR]%s'%(mystring,koding.Remove_Formatting(mystring, color=False, bold=False, italic=False, spaces=False, dots=True, dashes=True)))
+dialog.ok('DOTS, DASHES & SPACES REMOVED','[COLOR gold]Original:[/COLOR][CR]%s[CR][COLOR gold]This is with dots, dashes & spaces set to True:[/COLOR][CR]%s'%(mystring,koding.Remove_Formatting(mystring, color=False, bold=False, italic=False, spaces=True, dots=True, dashes=True)))
+dialog.ok('ALL FORMATTING REMOVED','[COLOR gold]Original:[/COLOR][CR]%s[CR][COLOR gold]This is with all options set to True:[/COLOR][CR]%s'%(mystring,koding.Remove_Formatting(mystring)))
 ~"""
     import re
     if color:

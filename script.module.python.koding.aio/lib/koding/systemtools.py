@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 
 # script.module.python.koding.aio
-# Python Koding AIO (c) by whufclee (info@totalrevolution.tv)
+# Python Koding AIO (c) by TOTALREVOLUTION LTD (support@trmc.freshdesk.com)
 
 # Python Koding AIO is licensed under a
 # Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
@@ -9,9 +9,6 @@
 # You should have received a copy of the license along with this
 # work. If not, see http://creativecommons.org/licenses/by-nc-nd/4.0.
 
-# IMPORTANT: If you choose to use the special noobsandnerds features which hook into their server
-# please make sure you give approptiate credit in your add-on description (noobsandnerds.com)
-# 
 # Please make sure you've read and understood the license, this code can NOT be used commercially
 # and it can NOT be modified and redistributed. If you're found to be in breach of this license
 # then any affected add-ons will be blacklisted and will not be able to work on the same system
@@ -24,9 +21,11 @@ import shutil
 import xbmc
 import xbmcaddon
 import xbmcgui
-
-import filetools
-from vartools import Data_Type
+import xbmcvfs
+try:
+    from vartools import Data_Type
+except:
+    pass
 #----------------------------------------------------------------
 # TUTORIAL #
 def Cleanup_Textures(frequency=14,use_count=10):
@@ -50,8 +49,9 @@ koding.Cleanup_Textures(frequency=5)
 ~"""
     try: from sqlite3 import dbapi2 as database
     except: from pysqlite2 import dbapi2 as database
+    from filetools import DB_Path_Check
 
-    db   = filetools.DB_Path_Check('Textures')
+    db   = DB_Path_Check('Textures')
     xbmc.log('### DB_PATH: %s' % db)
     conn = database.connect(db, timeout = 10, detect_types=database.PARSE_DECLTYPES, check_same_thread = False)
     conn.row_factory = database.Row
@@ -87,33 +87,13 @@ koding.Cleanup_Textures(frequency=5)
     xbmc.log("### Automatic Cache Removal: %d Old Textures removed" % len(images))
 
 # Delete files
-    thumbfolder = xbmc.translatePath('special://home/userdata/Thumbnails')
+    thumbfolder = 'special://home/userdata/Thumbnails'
     for image in images:
         path = os.path.join(thumbfolder, image)
         try:
-            os.remove(path)
+            xbmcvfs.delete(path)
         except:
             xbmc.log(Last_Error())
-#----------------------------------------------------------------
-# TUTORIAL #
-def Clear_Data(addonid):
-    """
-If you want to offer the option to clear the cookie data then you can add the
-following code in your settings.xml. This will wipe the cookies folder - could
-be useful if things like the initial run code sent back from server alters or
-the base urls have changed.
-
-<setting id="clear_data"    label="Re-check Server" type="action"   action="RunScript(special://home/addons/script.module.python.koding.aio/lib/koding/__init__.py,clear_data,your.plugin.id)"  option="close"  visible="true"/>
-~"""
-    root_path = os.path.join(xbmc.translatePath('special://profile/addon_data'),addonid)
-    
-    try:
-        xbmc.log('data cleared from: %s' % addonid)
-        shutil.rmtree(os.path.join(root_path, 'cookies'))
-        return True
-    except:
-        xbmc.log('failed to clear data from: %s' % addonid)
-        return False
 #----------------------------------------------------------------
 # TUTORIAL #
 def Current_Profile():
@@ -178,11 +158,14 @@ else:
         return False
 #----------------------------------------------------------------
 def Get_Mac(protocol = ''):
+    import binascii
     cont    = 0
     counter = 0
     mac     = ''
-    while mac == '' and counter < 5:
-        if sys.platform == 'win32': 
+    while mac == '' and len(mac)!=17 and counter < 5:
+        xbmc.log('attempting mac lookup %s'%counter,2)
+        if sys.platform == 'win32':
+            mac = ''
             for line in os.popen("ipconfig /all"):
                 if protocol == 'wifi':
                     if line.startswith('Wireless LAN adapter Wi'):
@@ -195,9 +178,7 @@ def Get_Mac(protocol = ''):
                             mac = ''
 
                 else:
-                    if line.startswith('Ethernet adapter Ethernet:'):
-                        cont = 1
-                    if line.lstrip().startswith('Physical Address') and cont == 1:
+                    if line.lstrip().startswith('Physical Address'):
                         mac = line.split(':')[1].strip().replace('-',':').replace(' ','')
                         if len(mac) == 17:
                             break
@@ -205,6 +186,7 @@ def Get_Mac(protocol = ''):
                             mac = ''
 
         elif sys.platform == 'darwin': 
+            mac = ''
             if protocol == 'wifi':
                 for line in os.popen("ifconfig en0 | grep ether"):
                     if line.lstrip().startswith('ether'):
@@ -224,10 +206,12 @@ def Get_Mac(protocol = ''):
                             mac = ''
 
         elif xbmc.getCondVisibility('System.Platform.Android'):
+            mac = ''
             try:
                 if protocol == 'wifi':
                     readfile = open('/sys/class/net/wlan0/address', mode='r')
-                else:
+
+                if protocol != 'wifi':
                     readfile = open('/sys/class/net/eth0/address', mode='r')
                 mac = readfile.read()
                 readfile.close()
@@ -237,18 +221,23 @@ def Get_Mac(protocol = ''):
                 mac = ''
 
         else:
+            mac = ''
             if protocol == 'wifi':
                 for line in os.popen("/sbin/ifconfig"):
                     if line.find('wlan0') > -1: 
                         mac = line.split()[4]
                         if len(mac) == 17:
                             break
+                        else:
+                            mac = ''
 
                     elif line.startswith('en'):
                         if 'Ethernet'in line and 'HWaddr' in line:
                             mac = line.split('HWaddr')[1].strip()
                             if len(mac) == 17:
                                 break
+                            else:
+                                mac = ''
 
             else:
                for line in os.popen("/sbin/ifconfig"): 
@@ -256,15 +245,21 @@ def Get_Mac(protocol = ''):
                         mac = line.split()[4] 
                         if len(mac) == 17:
                             break
+                        else:
+                            mac = ''
 
                     elif line.startswith('wl'):
                         if 'Ethernet'in line and 'HWaddr' in line:
                             mac = line.split('HWaddr')[1].strip()
                             if len(mac) == 17:
                                 break
+                            else:
+                                mac = ''
         if mac == '':
             counter += 1
-    xbmc.log('MAC: %s'%mac)
+    if protocol=='':
+        protocol = 'eth'
+    xbmc.log('%s MAC: %s'%(protocol,mac))
     if mac == '':
         return 'Unknown'
     return str(mac)
@@ -309,8 +304,8 @@ xbmc.sleep(5000)
 old_log = koding.Grab_Log(log_type='old')
 koding.Text_Box('OLD LOG FILE',old_log)
 ~"""
-    from filetools import Text_File
-    log_path    = xbmc.translatePath('special://logpath/')
+    from filetools import Physical_Path, Text_File
+    log_path    = Physical_Path('special://logpath/')
     logfilepath = os.listdir(log_path)
     finalfile   = 0
     for item in logfilepath:
@@ -322,7 +317,7 @@ koding.Text_Box('OLD LOG FILE',old_log)
             mylog        = os.path.join(log_path,item)
             cont = True
         if cont:
-            lastmodified = os.path.getmtime(mylog)
+            lastmodified = xbmcvfs.Stat(mylog).st_mtime()
             if lastmodified>finalfile:
                 finalfile = lastmodified
                 logfile   = mylog
@@ -421,7 +416,7 @@ CODE: Python_Version()
 
 EXAMPLE CODE:
 py_version = koding.Python_Version()
-dialog.ok('[COLOR gold]PYTHON VERSION[/COLOR]','You are currently running:','Python v.%s'%py_version)
+dialog.ok('PYTHON VERSION','You are currently running:','Python v.%s'%py_version)
 ~"""
     py_version = '%s.%s'%(sys.version_info[0],sys.version_info[1])
     return py_version
@@ -463,9 +458,12 @@ AVAILABLE PARAMS:
     but you can pass through a profile name here.
 
 EXAMPLE CODE:
-dialog.ok('RELOAD SKIN','We will now attempt to update the addons, pause 3s, update repos and pause 2s then reload the default profile. Press OK to continue.')
-koding.Refresh(r_mode=['addons~3000', 'repos~2000', 'profile'], profile_name='default')
+dialog.ok('RELOAD SKIN','We will now attempt to update the addons, pause 3s, update repos and pause 2s then reload the skin. Press OK to continue.')
+koding.Refresh(r_mode=['addons~3000', 'repos~2000', 'skin'])
+xbmc.sleep(2000)
+dialog.ok('COMPLETE','Ok that wasn\'t the best test to perform as you can\'t physically see any visible changes other than the skin refreshing so you\'ll just have to trust us that it worked!')
 ~"""
+    from vartools import Data_Type
     if profile_name == 'default':
         profile_name = Current_Profile()
 
@@ -513,7 +511,7 @@ dialog.ok('DEPENDENCIES','[COLOR=dodgerblue]xbmc.gui[/COLOR]  Min: %s  Max: %s'%
 ~"""
     from filetools import Text_File
     from vartools  import Find_In_Text
-    root     = xbmc.translatePath('special://xbmc/addons')
+    root     = 'special://xbmc/addons'
     dep_path = os.path.join(root,dependency,'addon.xml')
     content  = Text_File(dep_path,'r')
     max_ver  = Find_In_Text(content=content,start='version="',end='"')[1]

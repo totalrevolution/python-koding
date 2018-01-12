@@ -1,3 +1,16 @@
+v.0.9.9.1.4:
+- Added Physical_Path function which will return a correct special path even with Windows Store versions of Kodi
+- Fixed a number of modules so it's Win10 (Windows Store version) friendly
+- Improved the Create_Paths function so it can now take the special:// path
+- Fixed some bugs with Data_Type being referenced in the wrong module
+- Fixed small bug in xml function
+- Changed the default proxy url for the Link_Tester function (old one now uses CF)
+- Changed most os functions to xbmcvfs accross all modules
+- Removed Grab_Params and Populate_List functions, no longer used
+- Cleaned up all old features no longer used in init.py
+- Cleaned up the README.txt
+- Added new contact info to the headers of all py files
+
 v.0.9.9.1.2:
 - Added Remove_Formatting() function, this can remove any color, bold and italic tags as well as removing any preceding characters such as spaces, dots and dashes
 

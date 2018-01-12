@@ -12,10 +12,6 @@ addon.xml - just import as you would any other module, the following code would 
 
 default.py (or whatever your initial opening py document is called) - all you need is to import koding.py
 
-IF you're using the special features which hook into the noobsandnerds framework then you will also need to add the following line in your default.py file. Please note this is not for the majority of users, it is only required for developers who wish to use NaN as for their support and would like access to their own framework which has some excellent features.
-
-	koding.User_Info() - This will create a cookie file containing cached details. It's important you do this somewhere at the start of your code as it will initialise your variables on first run.
-
 ------------------------------------------------------------------------------------------
 
 A D D O N   B A S E D   F U N C T I O N S
@@ -90,13 +86,6 @@ such as path, version, name etc.
 
 ------------------------------------------------------------------------------------------
 
-ADD-ON INSTALL:
-Sorry due to large amounts of traffic to the NaN site this function has now been removed.
-It is currently unclear on whether or not it will return. If you've used this in previous
-code please remove, although it will just silently fail and print to the log.
-
-------------------------------------------------------------------------------------------
-
 ADDON LISTS:
 Return a list of enabled or disabled add-ons found in the database.
 
@@ -149,12 +138,14 @@ which are run as services then trying to enable them can cause Kodi to freeze.
 	    "enable" and that will uncomment out the service item. Please note that by uncommenting
 	    the service will not automatically start - you'll need to reload the profile for that.
 
-	    skip_service  -  This function can fail if certain dependencies are
-	    run as a service, if they are causing problems you can send through
-	    the id or a list of id's which you want to disable the service for.
-	    This will comment out the service part in the addon.xml before attempting
-	    to enable the add-on. Don't forget to re-enable this if you want the service
-	    running.
+	    skip_service  -  When running the enable or disable mode you can choose to add a list of
+	    add-ons you'd like to skip the process for. Of course you may be thinking why would I send
+	    through a list of addons I want the service enabled/disabled for but then I also add them
+	    to the skip_service list to say DON'T enable/disable - it makes no sense?! Well you'd be
+	    correct that doesn't make any sense as presumably you've already filtered out the add-ons
+	    you don't want affected, this command is designed more for those who don't send through a
+	    list of add-ons and instead use the default "all" value for the addons paramater. This
+	    then makes it very easy to just skip a handful of add-on services and enable all others.
 
 	EXAMPLE CODE:
 		dialog.ok('[COLOR gold]CHECKING FOR SERVICES[/COLOR]','We will now check for all add-ons installed which contain services')
@@ -421,11 +412,6 @@ This will delete your cookies file.
 	EXAMPLE CODE:
 		Open_URL(url='http://google.com',cookiejar='google')
 		dialog.ok('GOOGLE COOKIES CREATED','We have just opened a page to google.com, if you check your addon_data folder for your add-on you should see a cookies folder and in there should be a cookie called "google". When you press OK this will be removed.')
-
-	CLEARING COOKIES FROM ADD-ON SETTINGS:
-		If you want to offer the option to clear the cookie data direct from the add-on settings then you can add the following code. This will wipe the cookies folder for that add-on.
-
-        <setting id="clear_data"	label="Clear Cookies"	type="action"	action="RunScript(special://home/addons/script.module.python.koding.aio/lib/koding/__init__.py,clear_data,your.addon.id)"	option="close"	visible="true"/>
 
 ------------------------------------------------------------------------------------------
 
@@ -1365,68 +1351,6 @@ template (presuming you created one at http://totalrevolution.tv).
 		Add_Dir(name='TEST ITEM', url='', mode='test_item', folder=False, context_items=my_context, context_override=False)
 		# ^ This will add an item to the list AND a context menu item for when bring up the menu (when focused on this item).
 		# ^^ The context_override is set to False which means the new items will appear alongside the default Kodi context menu items.
-------------------------------------------------------------------------------------------
-
-CONVERT A STRING (URL) INTO MULTIPLE VARIABLES:
-This will allow you to send multiple values through via the Add_Dir
-function just as one string (url). This is then split up into however
-many values you want.
-
-	CODE: Grab_Params(extras, keys, [separator]))
-
-	AVAILABLE PARAMS:
-	    (*) extras  -  This is the string you want to split into a list of values.
-	    Each value needs to be split by <~> (unless a different separator is sent through).
-	    A good example of sending through name, DOB and sex would be: 'Mark<~>01.02.1976<~>male'
-
-	    (*) keys    -  These are the keys (variable names) you want to assign the split
-	    extras to. They need to be comma separated so using the above extras example
-	    you could use something like this: key='name,DOB,sex'.
-
-	    separator  -  This is optional, if you want to change the default separator you can do
-	    so here. Make sure it's something unique not used anywhere else in the string.
-
-	EXAMPLE CODE:
-		raw_string = 'Mark<~>01.02.1976<~>male'
-		vars = 'name,DOB,sex'
-		params = koding.Grab_Params(extras=raw_string, keys=vars)
-		dialog.ok('GRAB PARAMS RESULTS','Name: %s'%params["name"], 'DOB: %s'%params["DOB"], 'Sex: %s'%params["sex"])
-
-------------------------------------------------------------------------------------------
-
-POPULATE A LIST FROM AN ONLINE SCRAPE:
-If you have a basic index web page or a webpage with a common
-format for displaying links (on all pages) then you can use this
-to populate an add-on. It's capable of cleverly working out what
-needs to be sent through as a directory and what's a playable item.
-Take a look at the example below for a working example which explains
-this a little better.
-
-	CODE: Populate_List(url, [start_point, end_point, separator, skip]):
-
-	AVAILABLE PARAMS:
-	    (*) url  -  The start page of where to pull the first links from
-
-	    start_point  -  Send through the code tags you want to search for in the
-	    webpage. By default it's setup for a standard indexed site so the start_point
-	    is '<li+.<a href="'. The code will then grab every instance of start_point to end_point.
-
-	    end_point    -  Send through the code tags you want to search for in the
-	    webpage. By default it's setup for a standard indexed site so the end_point
-	    is '</a+.</li>'. The code will then grab every instance of start_point to end_point.
-
-	    separator  -  This is the point in the grabbed links (from above) where you want
-	    to split the string into a url and a display name. The default is ">".
-
-	    skip       -  By default this is set to ['..', '.', 'Parent Directory']. This is
-	    a list of links you don't want to appear in your add-on listing.
-
-	EXAMPLE CODE:
-		link ='http://totalrevolution.tv/videos/'
-		sp   ='<a href="'
-		ep   ='</a>'
-		sep  = '">'
-		koding.Populate_List(url=link, start_point=sp, end_point=ep, separator=sep)
 
 ------------------------------------------------------------------------------------------
 
@@ -1513,7 +1437,7 @@ IMPORTANT: There was a known bug where some certain compressed tar.gz files can 
 and a bad zipfile will continue to be made until it runs out of space on your storage device. In the unlikely
 event you encounter this issue just add the problematic file(s) to your exclude list. I think this has since
 been fixed since a complete re-code to this function, or at least I've been unable to recreate it. If you
-find this problem is still occuring please let me know (whufclee on noobsandnerds.com forum), thankyou.
+find this problem is still occuring please let me know (support@trmc.freshdesk.com), thankyou.
 
 	CODE: Compress(src,dst,[compression,parent])
 
@@ -1556,8 +1480,7 @@ find this problem is still occuring please let me know (whufclee on noobsandnerd
 ------------------------------------------------------------------------------------------
 
 CONVERT PHYSICAL PATHS TO SPECIAL:
-Convert physcial paths stored in text files to their special:// equivalent or
-replace instances of physical paths to special in a string sent through.
+Convert physcial paths stored in text files to their special:// equivalent or replace instances of physical paths to special in a string sent through.
 
 	CODE: Convert_Special([filepath, string])
 
@@ -1565,14 +1488,19 @@ replace instances of physical paths to special in a string sent through.
 
 	    filepath  -  This is the path you want to scan, by default it's set to the Kodi HOME directory.
 	    
-	    string    -  By default this is set to False, if you set to True you will get the
-	                 string of your 'filepath' returned with any reference to physical
-	                 path replaced with special://
+	    string    -  By default this is set to False which means it will convert all instances found of
+	    the physical paths to their special equivalent. The scan will convert all instances in all filenames
+	    ending in ini, xml, hash and properties. If you set this value to True you will get a return of your
+	    'filepath' string and no files will be altered.
+
+	    quoted    -  By default this is set to true, this means the return you get will be converted
+	    with urllib.quote_plus(). This is ideal if you need to get a string you can send
+	    through as a path for routing.
 
 	EXAMPLE CODE:
 		path = xbmc.translatePath('special://profile')
 		dialog.ok('[COLOR gold]ORIGINAL PATH[/COLOR]','Let\'s convert this path to it\'s special equivalent:\n[COLOR dodgerblue]%s[/COLOR]'%path)
-		path = Convert_Special(filepath=path,string=True)
+		path = Convert_Special(filepath=path,string=True, quoted=False)
 		dialog.ok('[COLOR gold]CONVERTED PATH[/COLOR]','This is the converted path:\n[COLOR dodgerblue]%s[/COLOR]'%path)
 		if dialog.yesno('[COLOR gold]CONVERT PHYSICAL PATHS[/COLOR]','We will now run through your Kodi folder converting all physical paths to their special:// equivalent in xml/hash/properties/ini files.\nDo you want to continue?'):
 		    koding.Convert_Special()
@@ -3044,47 +2972,6 @@ then I take no responsibility if it doesn't work!
 
 ------------------------------------------------------------------------------------------
 
-PROXY LIST:
-Returns a list of verified proxies, courtesy of proxyfor.eu
-The default return you'll get is a dictionary of countries where each
-value is a list containing dictionaries of "ip", "port" and "speed".
-
-Please note this function will most likely break at some point in the
-future as it relies on web scraping. If you find it's broken please
-contact the developer via the noobsandnerds forum.
-
-	CODE:   Proxy_List([dictionary])
-
-	AVAILABLE PARAMS:
-
-	    country  -  By default you'll get a dictionary of countries, each
-	    of which have lists of available proxies. If set to False you'll receive
-	    just one list of dictionaries. See the example code below to understand
-	    how the two can be used.
-
-	EXAMPLE CODE:
-		dialog.ok('[COLOR gold]GRAB PROXIES[/COLOR]','Let\'s pull results with both the default settings and also with country set to False. This should hopefully show how the 2 different modes can be of use.')
-		proxies = koding.Proxy_List()
-		mytext = '[COLOR dodgerblue]Here are some proxies, as shown in this example if you know the name of the country you want it makes it very simple to sort the results:[/COLOR]\n\n[COLOR gold]China:[/COLOR]\n'
-
-		for item in proxies['China']:
-		    mytext += 'IP: %s\nPort: %s\nSpeed: %s\n[COLOR steelblue]----------------[/COLOR]\n'%(item['ip'],item['port'],item['speed'])
-
-		mytext += '\n[COLOR gold]United States:[/COLOR]\n'
-		for item in proxies['United States']:
-		    mytext += 'IP: %s\nPort: %s\nSpeed: %s\n[COLOR steelblue]----------------[/COLOR]\n'%(item['ip'],item['port'],item['speed'])
-		Text_Box('MASTER PROXY LIST',mytext)
-		xbmc.sleep(7000)
-		dialog.ok('[COLOR gold]MASTER PROXY LIST[/COLOR]','Now let\'s try with a master list (country set to False). We still get the country details but it\'s not in the form of a dictionary and is just one big list.\n')
-		proxies = koding.Proxy_List(country=False)
-		mytext = '[COLOR dodgerblue]Here are all the proxies found, We don\'t really care about sorting by country so we can just list the whole lot in one big list:[/COLOR]\n'
-		for item in proxies:
-		    item = item[0]
-		    mytext += 'Country: %s\nIP: %s\nPort: %s\nSpeed: %s\n[COLOR steelblue]----------------[/COLOR]\n'%(item['country'],item['ip'],item['port'],item['speed'])
-		Text_Box('MASTER PROXY LIST',mytext)
-
-------------------------------------------------------------------------------------------
-
 VALIDATE LINK:
 Returns the code for a particular link, so for example 200 is a good link and 404 is a URL not found
 
@@ -3102,87 +2989,5 @@ Returns the code for a particular link, so for example 200 is a good link and 40
 		    dialog.ok('WEBSITE STATUS','The website [COLOR=dodgerblue]totalrevolution.tv[/COLOR] is [COLOR=lime]ONLINE[/COLOR]')
 		else:
 	    dialog.ok('WEBSITE STATUS','The website [COLOR=dodgerblue]totalrevolution.tv[/COLOR] is [COLOR=red]OFFLINE[/COLOR]')
-
-------------------------------------------------------------------------------------------
-
-RUN CODE FROM YOUR OWN SERVER:
-If you have web pages of your own then you can hook into them using koding.Main(url) which will pull the return from the URL and attempt to execute that code.
-
-WARNING: Running code directly from a server is generally discouraged, any add-ons using such code will certainly not be accepted on the official kodi.tv forum as it is strictly against their rules. By having add-ons capable of self updating and bypassing their highly vetted repository system it would be a security breach for the foundation so their stance on this is completely understandable. For third party development you are presumably in control of your own repository so it really shouldn't make much difference, however do note that running code directly from a server is slower than running locally and you'll find it's discouraged by a number of devs. Can certainly be useful for quick dynamic updates which need to take place though.
-
-	CODE:	koding.Main(url,[post_type])
-	post_type is optional, by default it's set as 'get'
-
-	AVAILABLE VALUES:
-		'get'  -  This is already the default so no real need to add this but this uses a standard query string
-		
-		'post' -  This will convert the query string into a post
-
-	EXAMPLE CODE:
-		koding.Main('http://testpage.com?query1=value1&query2=value2', post_type='post')
-
-------------------------------------------------------------------------------------------
-
-
-NOOBSANDNERDS FEATURES - CURRENTLY ON HOLD DUE TO TECHNICAL (SERVER) ISSUES
-===========================================================================
-
-The following unique features are only available to developers who have their addons supported at noobsandnerds.com. The more users they have hooking into these functions the more money they need to spend on servers and as NaN is a voluntarily run site they rely solely on donations and google ads to keep the site going. If you're interested in hooking into these features please send whufclee a PM on the noobsandnerds forum.
-
-SECURITY
-========
-Lock your code to your add-on. You can lock code so it only works with your add-on id, if someone tries to clone your code without your consent then they would only be able to run it if they used the same ID. Even if someone did try to clone the add-on using the same ID you're able to push code remotely via the sync options available (details below). What code you choose to push is entirely your call but it must not be a malicious act against the end user - developers using malicious code will not be tolerated on this system. Simply forcing the add-on to sync with your fanart/icon/addon.xml should suffice - it will then overwrite the bogus version automatically.
-
-LOGIN FEATURES
-==============
-If you want specific features only avaialble via NaN login you'll need to add login details in your settings.xml. This is optional, there is no requirement to force login upon your users but it can be useful - especially with the new upcoming Add-on Portal features where users will be able to hook into a more personalised system. Some developers also want to try and limit the amount of users accessing their add-on due to too many hits on a server, this will help with that as you can lock certain features to login only. Login is locked to a max. of 3 different IP's in a 24hr period, if the same login credentials are used by more than 3 different IP's the account will be temporarily suspended for 24 hours and they will no longer have any access to any of the add-on. If you require login then you'll need the following id's in your settings.xml
-
-		<setting id="login" label="Enable noobsandnerds login" type="bool" default="false"/>
-		<setting id="username" label="Username" type="text" default="" visible="eq(-1,true) "/>
-		<setting id="password" label="password" type="text" default="" option="hidden" visible="eq(-2,true) "/>
-
-AUTO INSTALL THIRD PARTY ADD-ONS ON STARTUP
-===========================================
-If there's any add-ons your code can hook into which aren't hosted on your repository then you can set a list of add-ons you want installed when the user opens your add-on. This list of add-ons can be set online via your own (*)admin panel, all that's required is a list of comma separated addon id's. You will need the following added into your settings.xml file:
-
-		<setting id="installaddons"	label="Offer to install recommended extras"	type="enum"	values="Off|Auto|Ask"	default="0"	visible="true"/>
-		<setting id="installrepos"	label="Install relevant repositories"	type="enum"	values="Off|Auto|Ask"	default="0"	visible="eq(-1,1)||eq(-1,2)"/>
-		<setting id="silent"	    label="Install type"	type="enum"	values="Show Install Progress|Silent"	default="0"	visible="eq(-2,1)||eq(-2,2)"/>
-
-Of course if you don't want to give the end user choices then it's possible to set the defaults of these id's and set visibility as false. However, ethically the user should always be given a choice, especially if your imports contain third party code not maintained by yourself as there's no guarantee what code that third party may push in the future.
-
-TEST/DEVELOPMENT VERSIONS
-=========================
-If you want to offer a test version only available to donators or a specific test group then you can do so very easily. Your test add-on needs to be uploaded via your (*)admin panel and all the user needs to do is enter their NaN login credentials, if they are in the correct test group and have access then they can switch between test or live version at the click of a button in settings. To the end user it will only appear as one add-on that's installed but it can be opened into test or live just by one simple change in the settings. Please add this to your settings.xml file if you want to offer test versions:
-
-		<setting id="testver" label="Use test version" type="bool" default="true" />
-		<setting id="testsettings" label="Test version settings" type="action"	action="RunScript(special://home/addons/script.module.python.koding.aio/lib/koding/__init__.py,settings,your.plugin.id)" option="close" />
-
-CREATE DEVELOPMENT VERSIONS RUNNING OFF YOUR OWN SERVER
-=======================================================
-If your add-on relies on grabbing content you've added to the NaN servers but you don't want to mess around with the live environment you can create a development version of the add-on and have it hit your own server instead. The development version can just be a duplicate of your existing add-on but with a new id, contact a member of the admin team at NaN to get it approved and then you'll be able to edit the base domain as you wish.
-
-SYNCHRONISE FILES
-=================
-By adding small zip files on the server you can have your add-on auto-syncing with specific files. Particularly useful if you have userdata which is required but often requires some sort of regular changes.
-
-The system will check every 24 hours for newly updated files. This can of course be overrided in extreme circumstances by clearing the cookie file and it will then check again. This hack should only be used in extreme circumstances and anyone found to be abusing this will most likely end up with their add-on blacklisted as it can potentially cause a ddos attack affect on the servers and affect other add-ons (and normal web users) using the system.
-
-
-RUNNING ENCRYPTED/ONLINE CODE
-=============================
-
-RUN ENCRYPTED CODE ON FIRST RUN:
-If you want to hide specific code then you can do so by uploading a segment of code via the web form and this will be run automatically (encrypted) when you run the add-on, this is cached so if testing make sure you clear your cookies folder otherwise you may get false positives. If you wish to run this specific piece of code at any point later on in the add-on you can simply call koding.User_Info()
-
-RUN CUSTOM ONLINE CODE:
-You can upload as many segments of code as you want and they can run by using the following command: koding.Main(url) where url is the name of the code page you created, e.g. 'check_updates'.
-
-RUN UNIVERSAL NAN CODE :
-You can run a variety of universal NaN modules, if you want to submit new ones then you're free to do so, just get in touch with a member of admin. Below are a list of the current functions available to anyone who's add-on has been accepted on the system.
-
-------------------------------------------------------------------------------------------
-
-RETURN THE BASE URL: koding.Check_Cookie('base') - NaN uses a special load balancing system whereby multiple servers are used, all sync'd with access to the same content. If you need to hook into files hosted on your NaN account then using this function will return the base url. This may change from day to day, every add-on that uses koding.py will automatically get a new randomised server to use for the following 24 hours. This helps prevent ddos attacks, gives fallback options for any slow servers and also makes sure there are sufficient backups of your important files.
 
 ------------------------------------------------------------------------------------------
