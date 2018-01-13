@@ -61,7 +61,7 @@ dialog.ok('CHECK SETTINGS','If you take a look in the addon_data folder for pyth
 setSetting("autorun", "true")
 autoRun = getSetting("autorun")
 dialog.ok('AUTORUN VALUE','The value of autorun in these new settings is [COLOR dodgerblue]%s[/COLOR].[CR][CR]Press OK to delete this file.'%autoRun)
-os.remove(xbmc.translatePath(myXmlFile))
+os.remove(koding.Physical_Path(myXmlFile))
 ~"""
 
     def __init__(self, xmlFile, masterTag="settings", childTag="setting"):
@@ -295,7 +295,7 @@ dialog.ok('ADDONS DB','The path to the current addons database is:',dbpath)
             if lastmodified>finalfile:
                 finalfile = lastmodified
                 gooddb   = mydb
-    return gooddb
+    return Physical_Path(gooddb)
 #---------------------------------------------------------------------------------------------------
 # TUTORIAL #
 def Delete_Crashlogs(extra_paths=[]):
@@ -661,7 +661,7 @@ AVAILABLE PARAMS:
         'tb' = terabytes (float to 4 decimal places)
 
 EXAMPLE CODE:
-HOME = xbmc.translatePath('special://home')
+HOME = Physical_Path('special://home')
 my_space = koding.Free_Space(HOME, 'gb')
 dialog.ok('Free Space','Available space in HOME: %s GB' % my_space)
 ~"""
@@ -712,7 +712,7 @@ AVAILABLE PARAMS:
         'tb' = terabytes (float to 4 decimal places)
 
 EXAMPLE CODE:
-HOME = xbmc.translatePath('special://home')
+HOME = Physical_Path('special://home')
 home_size = Folder_Size(HOME, 'mb')
 dialog.ok('Folder Size','KODI HOME: %s MB' % home_size)
 ~"""
@@ -857,7 +857,7 @@ AVAILABLE PARAMS:
     through filter='.xml'.
 
 EXAMPLE CODE:
-ADDONS = xbmc.translatePath('special://home/addons')
+ADDONS = Physical_Path('special://home/addons')
 addon_folders = koding.Get_Contents(path=ADDONS, folders=True, exclude_list=['packages','temp'], full_path=False)
 results = ''
 for item in addon_folders:
@@ -926,7 +926,7 @@ AVAILABLE PARAMS:
 
 EXAMPLE CODE:
 dp = xbmcgui.DialogProgress()
-source = xbmc.translatePath('special://profile/move_test')
+source = koding.Physical_Path('special://profile/move_test')
 
 # Lets create a 500MB dummy file so we can move and see dialog progress
 dummy = os.path.join(source,'dummy')
@@ -943,7 +943,7 @@ dialog.ok('DUMMY FILE CREATED','If you want to check in your userdata folder you
 # This is optional but if you want to see a dialog progress then you'll need this
 dp.create('MOVING FILES','Please Wait')
 
-destination = xbmc.translatePath('special://home/My MOVED Dummy File')
+destination = koding.Physical_Path('special://home/My MOVED Dummy File')
 koding.Move_Tree(source, destination, dp)
 dialog.ok('CHECK YOUR KODI HOME FOLDER','Please check your Kodi home folder, the dummy file should now have moved in there. When you press OK it will be removed')
 shutil.rmtree(destination)
@@ -1034,7 +1034,7 @@ AVAILABLE PARAMS:
     text already in the file.
 
 EXAMPLE CODE:
-HOME = xbmc.translatePath('special://home')
+HOME = koding.Physical_Path('special://home')
 koding_test = os.path.join(HOME, 'koding_test.txt')
 koding.Text_File(path=koding_test, mode='w', text='Well done, you\'ve created a text file containing this text!')
 dialog.ok('CREATE TEXT FILE','If you check your home Kodi folder and you should now have a new koding_test.txt file in there.','[COLOR=gold]DO NOT DELETE IT YET![/COLOR]')

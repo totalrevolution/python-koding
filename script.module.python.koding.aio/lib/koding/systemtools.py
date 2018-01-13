@@ -98,7 +98,9 @@ koding.Cleanup_Textures(frequency=5)
 # TUTORIAL #
 def Current_Profile():
     """
-This will return the current running profile.
+This will return the current running profile, it's only one line of code but this is for my benefit as much as
+anyone else's. I use this function quite a lot and keep forgetting the code so figured it would be easier to
+just write a simple function for it :)
 
 CODE:  Current_Profile()
 

@@ -26,20 +26,22 @@ koding_path = Physical_Path("special://home/addons/script.module.python.koding.a
 # TUTORIAL #
 def Browse_To_Folder(header='Select the folder you want to use', path = 'special://home'):
     """
-Browse to a folder and return the path
+As the title suggests this will bring up a dialog that allows the user to browse to a folder
+and the path is then returned.
 
-CODE: koding.Browse_To_Folder([header, path])
+IMPORTANT: Do not confuse this with the Browse_To_File function
+
+CODE: Browse_To_Folder(header, path)
 
 AVAILABLE PARAMS:
+header  -  As the name suggests this is a string to be used for the header/title
+of the window. The default is "Select the folder you want to use".
 
-    header  -  As the name suggests this is a string to be used for the header/title
-    of the window. The default is "Select the folder you want to use".
-
-    path    -  Optionally you can add a default path for the browse start folder.
-    The default start position is the Kodi HOME folder.
+path    -  Optionally you can add a default path for the browse start folder.
+The default start position is the Kodi HOME folder.
 
 EXAMPLE CODE:
-folder = koding.Browse_To_Folder('Choose a folder you want to use')
+folder = koding.Browse_To_Folder(header='Choose a folder you want to use', path='special://home/userdata')
 dialog.ok('FOLDER DETAILS','Folder path: [COLOR=dodgerblue]%s[/COLOR]'%folder)
 ~"""    
     text = dialog.browse(type=3, heading=header, shares='files', useThumbs=False, treatAsFolder=False, defaultt=path)

@@ -132,11 +132,6 @@ dialog.ok('NAME AND VERSION','[COLOR=dodgerblue]Add-on Name:[/COLOR] %s' % name,
     else:
         return ADDON.getAddonInfo(id=id)
 #----------------------------------------------------------------
-def Addon_Install(addon_id,confirm=True,silent=0,repo_install=1):
-    xbmc.log('### DUE TO SERVER PROBLEMS AT NAN THE ADDON INSTALL FUNCTION YOU\'VE ATTEMPTED TO CALL IS CURRENTLY DISABLED. PLEASE REMOVE FROM YOUR CODE.',2)
-    xbmc.log('### AT THIS MOMENT IN TIME IT\'S UNSURE WHETHER OR NOT THIS FUNCTION WILL BE GETTING ADDED BACK TO PYTHON KODING OR NOT - SORRY FOR ANY INCONVENIENCE.',2)
-    pass
-#----------------------------------------------------------------
 # TUTORIAL #
 def Addon_List(enabled=True, inc_new=False):
     """

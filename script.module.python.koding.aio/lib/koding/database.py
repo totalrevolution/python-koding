@@ -99,7 +99,7 @@ final_results = ''
 for item in results:
     final_results += 'ID: %s | Name: %s\n'%(item["id"], item["name"])
 koding.Text_Box('DB RESULTS', final_results)
-(addon_db_path)
+koding.Remove_Table('test_table')
 ~"""
     global dbcon
     sql_string = "INSERT INTO %s (" % table
@@ -157,7 +157,7 @@ final_results = ''
 for item in results:
     final_results += 'ID: %s | Name: %s\n'%(item["id"], item["name"])
 koding.Text_Box('DB RESULTS', 'Below are details of the items pulled from our db:\n\n%s'%final_results)
-xbmcvfs.delete(addon_db_path)
+koding.Remove_Table('test_table')
 ~"""
     dbcur, dbcon = _connect_to_db()
     sql_string = "INSERT INTO %s (" % table
@@ -206,7 +206,7 @@ final_results = ''
 for item in results:
     final_results += 'ID: %s | Name: %s\n'%(item["id"], item["name"])
 koding.Text_Box('DB RESULTS', final_results)
-xbmcvfs.delete(addon_db_path)
+koding.Remove_Table('test_table')
 ~"""
     sql_string = "CREATE TABLE IF NOT EXISTS %s (" % table
     columns = spec.get("columns", {})
@@ -318,7 +318,7 @@ final_results = ''
 for item in results:
     final_results += 'ID: %s | Name: %s\n'%(item["id"], item["name"])
 koding.Text_Box('DB RESULTS', final_results)
-xbmcvfs.delete(addon_db_path)
+koding.Remove_Table('test_table')
 ~"""
     try:
         return _execute_db_string("SELECT * FROM %s" % table)
@@ -354,7 +354,7 @@ final_results = ''
 for item in results:
     final_results += 'ID: %s | Name: %s\n'%(item["id"], item["name"])
 koding.Text_Box('DB CONTENTS', final_results)
-xbmcvfs.delete(addon_db_path)
+koding.Remove_Table('test_table')
 ~"""
     if spec == None:
         return Get_All_From_Table()
@@ -408,7 +408,7 @@ final_results = ''
 for item in results:
     final_results += 'ID: %s | Name: %s\n'%(item["id"], item["name"])
 koding.Text_Box('NEW DB CONTENTS', final_results)
-xbmcvfs.delete(addon_db_path)
+koding.Remove_Table('test_table')
 ~"""
     global dbcon
     sql_string = "DELETE FROM %s WHERE " % table
@@ -448,7 +448,7 @@ AVAILABLE PARAMS:
 
 EXAMPLE CODE:
 dialog.ok('REMOVE TABLE','It\'s a bit pointless doing this as you can\'t physically see what\'s happening so you\'ll just have to take our word it works!')
-koding.Remove_Table('my_test_table')
+koding.Remove_Table('test_table')
 ~"""
     sql_string = "DROP TABLE IF EXISTS %s;" % table
     _execute_db_string(sql_string)

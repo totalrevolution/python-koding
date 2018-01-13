@@ -29,9 +29,9 @@ Clean a url, removes whitespaces and common buggy formatting when pulling from w
 
 CODE: Cleanup_URL(url)
 
-    AVAILABLE PARAMS:
+AVAILABLE PARAMS:
         
-        (*) url   -  This is the main url you want cleaned up.
+    (*) url   -  This is the main url you want cleaned up.
 
 EXAMPLE CODE:
 raw_url = '" http://test.com/video/"/'
@@ -109,10 +109,7 @@ dialog.ok('DELETE FILE','Click OK to delete the downloaded file.')
 xbmcvfs.delete(dst)
 ~"""
     from filetools import Physical_Path
-    xbmc.log('dest orig: %s'%dest,2)
     dest = Physical_Path(dest)
-    xbmc.log('dest converted: %s'%dest,2)
-
     status = Validate_Link(url,timeout)
     if status >= 200 and status < 400:
         if Python_Version() < 2.7 and url.startswith('https'):

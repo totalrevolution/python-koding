@@ -1,3 +1,7 @@
+v.0.9.9.2:
+- Tidied up the README file, now matches what's in the add-on and every function has been tested
+- Fixed some example code
+
 v.0.9.9.1.4:
 - Added Physical_Path function which will return a correct special path even with Windows Store versions of Kodi
 - Fixed a number of modules so it's Win10 (Windows Store version) friendly
