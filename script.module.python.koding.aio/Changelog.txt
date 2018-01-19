@@ -1,3 +1,6 @@
+v.0.9.9.3.3:
+- Fixed bad indentation in addon.xml
+
 v.0.9.9.3.2:
 - Added extra security checks in Move_Tree, esp. for OE/LE devices.
 
