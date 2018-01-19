@@ -965,11 +965,11 @@ shutil.rmtree(destination)
                 xbmc.log('File with same name as folder exists, need to manually delete:',2)
                 xbmc.log(dst_dir,2)
         if not os.path.exists(dst_dir):
-            xbmcvfs.mkdirs(dst_dir)
+            os.makedirs(dst_dir)
         for file_ in files:
             src_file = os.path.join(src_dir, file_)
             dst_file = os.path.join(dst_dir, file_)
-            if os.path.exists(dst_file):
+            if os.path.exists(dst_file) and dst_file != dst:
                 os.remove(dst_file)
             try:
                 os.rename(src_file,dst_file)
