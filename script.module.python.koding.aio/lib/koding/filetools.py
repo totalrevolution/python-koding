@@ -958,14 +958,23 @@ shutil.rmtree(destination)
 
     for src_dir, dirs, files in os.walk(src):
         dst_dir = src_dir.replace(src, dst, 1)
-        if not xbmcvfs.exists(dst_dir):
+        if os.path.exists(dst_dir) and not os.path.isdir(dst_dir):
+            try:
+                os.remove(dst_dir)
+            except:
+                xbmc.log('File with same name as folder exists, need to manually delete:',2)
+                xbmc.log(dst_dir,2)
+        if not os.path.exists(dst_dir):
             xbmcvfs.mkdirs(dst_dir)
         for file_ in files:
             src_file = os.path.join(src_dir, file_)
             dst_file = os.path.join(dst_dir, file_)
             if os.path.exists(dst_file):
                 os.remove(dst_file)
-            shutil.move(src_file, dst_dir)
+            try:
+                os.rename(src_file,dst_file)
+            except:
+                shutil.move(src_file, dst_dir)
             if dp:
                 try:
                     count += 1

@@ -1,3 +1,6 @@
+v.0.9.9.3.1:
+- Bug fix with Move_Tree, some platforms it was corrupting files on move
+
 v.0.9.9.3:
 - Bug fix with adult enable
 - Move_Tree can now accept special paths.
