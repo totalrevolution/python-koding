@@ -325,9 +325,9 @@ AVAILABLE PARAMS:
     (disable auto updates).
 
 ~"""
-    from filetools   import Move_Tree, End_Path
+    from filetools import End_Path, Move_Tree, Physical_Path
 
-    adult_store  = "special://profile/addon_data/script.module.python.koding.aio/adult_store"
+    adult_store  = Physical_Path("special://profile/addon_data/script.module.python.koding.aio/adult_store")
     disable_list = []
     if not xbmcvfs.exists(adult_store):
         xbmcvfs.mkdirs(adult_store)
@@ -344,20 +344,21 @@ AVAILABLE PARAMS:
             try:
                 addon_path = xbmcaddon.Addon(id=item).getAddonInfo("path")
             except:
-                addon_path = os.path.join(ADDONS,item)
+                addon_path = Physical_Path(os.path.join(ADDONS,item))
             path_id = End_Path(addon_path)
-            if xbmcvfs.exists(addon_path):
+            if os.path.exists(addon_path):
                 Move_Tree(addon_path,os.path.join(adult_store,path_id))
     else:
         KODI_VER    = int(float(xbmc.getInfoLabel("System.BuildVersion")[:2]))
         addon_vault = []
-        if xbmcvfs.exists(adult_store):
-            for item in xbmcvfs.listdir(adult_store):
+        if os.path.exists(adult_store):
+            for item in os.listdir(adult_store):
                 store_dir = os.path.join(adult_store,item)
                 addon_dir = os.path.join(ADDONS, item)
-                if xbmcvfs.exists(store_dir):
+                if os.path.exists(store_dir):
                     Move_Tree(store_dir,addon_dir)
                     addon_vault.append(item)
+
         if KODI_VER >= 16:
             Toggle_Addons(addon=addon_vault, safe_mode=True, refresh=True, update_status=update_status)
         else:

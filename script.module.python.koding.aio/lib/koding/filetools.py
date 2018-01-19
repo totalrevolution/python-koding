@@ -948,6 +948,8 @@ koding.Move_Tree(source, destination, dp)
 dialog.ok('CHECK YOUR KODI HOME FOLDER','Please check your Kodi home folder, the dummy file should now have moved in there. When you press OK it will be removed')
 shutil.rmtree(destination)
 ~"""
+    src = Physical_Path(src)
+    dst = Physical_Path(dst)
     if dp:
         totalfiles = 0
         for root, dirs, files in os.walk(src):
@@ -961,8 +963,8 @@ shutil.rmtree(destination)
         for file_ in files:
             src_file = os.path.join(src_dir, file_)
             dst_file = os.path.join(dst_dir, file_)
-            if xbmcvfs.exists(dst_file):
-                xbmcvfs.delete(dst_file)
+            if os.path.exists(dst_file):
+                os.remove(dst_file)
             shutil.move(src_file, dst_dir)
             if dp:
                 try:

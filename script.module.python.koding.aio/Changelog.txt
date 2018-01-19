@@ -1,3 +1,7 @@
+v.0.9.9.3:
+- Bug fix with adult enable
+- Move_Tree can now accept special paths.
+
 v.0.9.9.2:
 - Tidied up the README file, now matches what's in the add-on and every function has been tested
 - Fixed some example code
