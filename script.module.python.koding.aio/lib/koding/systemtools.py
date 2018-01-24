@@ -161,9 +161,10 @@ else:
 #----------------------------------------------------------------
 def Get_Mac(protocol = ''):
     import binascii
-    cont    = 0
-    counter = 0
-    mac     = ''
+    cont      = False
+    vpn_check = False
+    counter   = 0
+    mac       = ''
     while mac == '' and len(mac)!=17 and counter < 5:
         xbmc.log('attempting mac lookup %s'%counter,2)
         if sys.platform == 'win32':
@@ -171,8 +172,8 @@ def Get_Mac(protocol = ''):
             for line in os.popen("ipconfig /all"):
                 if protocol == 'wifi':
                     if line.startswith('Wireless LAN adapter Wi'):
-                        cont = 1
-                    if line.lstrip().startswith('Physical Address') and cont == 1:
+                        cont = True
+                    if line.lstrip().startswith('Physical Address') and cont:
                         mac = line.split(':')[1].strip().replace('-',':').replace(' ','')
                         if len(mac) == 17:
                             break
@@ -180,12 +181,16 @@ def Get_Mac(protocol = ''):
                             mac = ''
 
                 else:
-                    if line.lstrip().startswith('Physical Address'):
+                    if line.lstrip().startswith('Description'):
+                        if not 'VPN' in line:
+                            vpn_check = True
+                    if line.lstrip().startswith('Physical Address') and vpn_check:
                         mac = line.split(':')[1].strip().replace('-',':').replace(' ','')
                         if len(mac) == 17:
                             break
                         else:
                             mac = ''
+                            vpn_check = False
 
         elif sys.platform == 'darwin': 
             mac = ''
