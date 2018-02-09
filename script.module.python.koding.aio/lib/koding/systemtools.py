@@ -159,117 +159,79 @@ else:
     except:
         return False
 #----------------------------------------------------------------
-def Get_Mac(protocol = ''):
-    import binascii
+def Get_Mac(protocol = 'eth'):
     cont      = False
     vpn_check = False
     counter   = 0
     mac       = ''
-    while mac == '' and len(mac)!=17 and counter < 5:
-        xbmc.log('attempting mac lookup %s'%counter,2)
+    while len(mac)!=17 and counter < 5:
         if sys.platform == 'win32':
-            mac = ''
             for line in os.popen("ipconfig /all"):
                 if protocol == 'wifi':
                     if line.startswith('Wireless LAN adapter Wi'):
                         cont = True
                     if line.lstrip().startswith('Physical Address') and cont:
                         mac = line.split(':')[1].strip().replace('-',':').replace(' ','')
-                        if len(mac) == 17:
-                            break
-                        else:
-                            mac = ''
-
                 else:
                     if line.lstrip().startswith('Description'):
                         if not 'VPN' in line:
                             vpn_check = True
                     if line.lstrip().startswith('Physical Address') and vpn_check:
                         mac = line.split(':')[1].strip().replace('-',':').replace(' ','')
-                        if len(mac) == 17:
-                            break
-                        else:
-                            mac = ''
-                            vpn_check = False
+                        vpn_check = False
 
         elif sys.platform == 'darwin': 
-            mac = ''
             if protocol == 'wifi':
                 for line in os.popen("ifconfig en0 | grep ether"):
                     if line.lstrip().startswith('ether'):
                         mac = line.split('ether')[1].strip().replace('-',':').replace(' ','')
-                        if len(mac) == 17:
-                            break
-                        else:
-                            mac = ''
-
             else:
                 for line in os.popen("ifconfig en1 | grep ether"):
                     if line.lstrip().startswith('ether'):
                         mac = line.split('ether')[1].strip().replace('-',':').replace(' ','')
-                        if len(mac) == 17:
-                            break
-                        else:
-                            mac = ''
 
         elif xbmc.getCondVisibility('System.Platform.Android'):
-            mac = ''
             try:
                 if protocol == 'wifi':
                     readfile = open('/sys/class/net/wlan0/address', mode='r')
-
                 if protocol != 'wifi':
                     readfile = open('/sys/class/net/eth0/address', mode='r')
                 mac = readfile.read()
                 readfile.close()
+                mac = mac.strip()
                 mac = mac.replace(' ','')
                 mac = mac[:17]
             except:
                 mac = ''
 
         else:
-            mac = ''
             if protocol == 'wifi':
                 for line in os.popen("/sbin/ifconfig"):
                     if line.find('wlan0') > -1: 
                         mac = line.split()[4]
-                        if len(mac) == 17:
-                            break
-                        else:
-                            mac = ''
-
                     elif line.startswith('en'):
                         if 'Ethernet'in line and 'HWaddr' in line:
                             mac = line.split('HWaddr')[1].strip()
-                            if len(mac) == 17:
-                                break
-                            else:
-                                mac = ''
-
             else:
                for line in os.popen("/sbin/ifconfig"): 
                     if line.find('eth0') > -1: 
                         mac = line.split()[4] 
-                        if len(mac) == 17:
-                            break
-                        else:
-                            mac = ''
-
                     elif line.startswith('wl'):
                         if 'Ethernet'in line and 'HWaddr' in line:
                             mac = line.split('HWaddr')[1].strip()
-                            if len(mac) == 17:
-                                break
-                            else:
-                                mac = ''
-        if mac == '':
+        counter += 1
+        xbmc.log('attempt no.%s mac: %s'%(counter,mac),2)
+    if len(mac) != 17:
+        counter = 0
+        while counter < 5 and len(mac) != 17:
+            mac = xbmc.getInfoLabel('Network.MacAddress')
+            xbmc.log('MAC (backup): %s'%mac,2)
+            xbmc.sleep(100)
             counter += 1
-    if protocol=='':
-        protocol = 'eth'
-    xbmc.log('%s MAC: %s'%(protocol,mac))
-    if mac == '':
+    if len(mac) != 17:
         return 'Unknown'
-    return str(mac)
+    else:
+        return mac
 #-----------------------------------------------------------------------------
 # TUTORIAL #
 def Grab_Log(log_type = 'std', formatting = 'original', sort_order = 'reverse'):

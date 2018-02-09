@@ -503,7 +503,7 @@ if vid:
         return False
 #----------------------------------------------------------------
 # TUTORIAL #
-def Play_Video(video,showbusy=True,content='video',ignore_dp=False,timeout=10, item=None, player=xbmc.Player()):
+def Play_Video(video,showbusy=True,content='video',ignore_dp=False,timeout=10, item=None, player=xbmc.Player(), resolver=None):
     """
 This will attempt to play a video and return True or False on
 whether or not playback was successful. This function is similar
@@ -553,7 +553,13 @@ AVAILABLE PARAMS:
     the auto-generation. If anything else sent through no metadata will be set,
     you would use this option if you've already set metadata in a previous function.
 
+    player  -  By default this is set to xbmc.Player() but you can send through
+    a different class/function if required.
 
+    resolver  -  By default this is set to urlresolver but if you prefer to use
+    your own custom resolver then just send through that class when calling this
+    function and the link sent through will be resolved by your custom resolver.
+    
 EXAMPLE CODE:
 isplaying = koding.Play_Video('http://totalrevolution.tv/videos/python_koding/Browse_To_Folder.mov')
 if isplaying:
@@ -564,7 +570,9 @@ else:
 ~"""
 
     xbmc.log('### ORIGINAL VIDEO: %s'%video)
-    import urlresolver
+    if not resolver:
+        import urlresolver
+        resolver = urlresolver
     try:    import simplejson as json
     except: import json
 
@@ -631,7 +639,7 @@ else:
             try:
                 xbmc.log('Attempting to resolve via urlresolver module')
                 xbmc.log('video = %s'%video)
-                hmf = urlresolver.HostedMediaFile(url=video, include_disabled=False, include_universal=True)
+                hmf = resolver.HostedMediaFile(url=video, include_disabled=False, include_universal=True)
                 if hmf.valid_url() == True:
                     video = hmf.resolve()
                     xbmc.log('### VALID URL, RESOLVED: %s'%video)
@@ -652,7 +660,7 @@ else:
         try:
             xbmc.log('Attempting to resolve via urlresolver module')
             xbmc.log('video = %s'%video)
-            hmf = urlresolver.HostedMediaFile(url=video, include_disabled=False, include_universal=True)
+            hmf = resolver.HostedMediaFile(url=video, include_disabled=False, include_universal=True)
             if hmf.valid_url() == True:
                 video = hmf.resolve()
                 xbmc.log('### VALID URL, RESOLVED: %s'%video)

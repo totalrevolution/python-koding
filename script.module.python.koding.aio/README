@@ -3144,7 +3144,13 @@ function to get the final resolved url.
 	    the auto-generation. If anything else sent through no metadata will be set,
 	    you would use this option if you've already set metadata in a previous function.
 
+	    player  -  By default this is set to xbmc.Player() but you can send through
+	    a different class/function if required.
 
+	    resolver  -  By default this is set to urlresolver but if you prefer to use
+	    your own custom resolver then just send through that class when calling this
+	    function and the link sent through will be resolved by your custom resolver.
+    
 	EXAMPLE CODE:
 	-------------
 	isplaying = koding.Play_Video('http://totalrevolution.tv/videos/python_koding/Browse_To_Folder.mov')

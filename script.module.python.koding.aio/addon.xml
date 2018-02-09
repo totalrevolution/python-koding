@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="script.module.python.koding.aio"
    name="Python Koding AIO"
-   version="0.9.9.3.4"
+   version="0.9.9.4"
    provider-name="Total Revolution">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
@@ -20,7 +20,7 @@
     <license>Creative Commons 4.0-NC-ND</license>
     <forum>http://totalrevolution.tv/forum</forum>
     <website>http://totalrevolution.tv</website>
-    <news>Updated forum and new github links</news>
+    <news>Added custom resolver option for Play_Video</news>
     <source>https://github.com/totalrevolution/python-koding/tree/master/script.module.python.koding.aio</source>
   </extension>
 </addon>

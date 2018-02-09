@@ -105,8 +105,14 @@ but without the file/line details.')
 ~"""
     import xbmc
     if DEBUG == 'true' or my_debug:
-        xbmc.log('### %s (%s) : %s'%(ADDON_ID,AddonVersion,string), level=xbmc.LOGNOTICE)
+        try:
+            xbmc.log('### %s (%s) : %s'%(ADDON_ID,AddonVersion,string), level=xbmc.LOGNOTICE)
+        except:
+            xbmc.log(Last_Error(),level=xbmc.LOGNOTICE)
     if line_info:
-        from inspect import getframeinfo, stack
-        caller = getframeinfo(stack()[1][0])
-        xbmc.log('^ Line No. %s  |  File: %s'%(caller.lineno,caller.filename),level=xbmc.LOGNOTICE)
+        try:
+            from inspect import getframeinfo, stack
+            caller = getframeinfo(stack()[1][0])
+            xbmc.log('^ Line No. %s  |  File: %s'%(caller.lineno,caller.filename),level=xbmc.LOGNOTICE)
+        except:
+            xbmc.log(Last_Error(),level=xbmc.LOGNOTICE)

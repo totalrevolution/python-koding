@@ -1,3 +1,7 @@
+v.0.9.9.4:
+- Added ability to send through a custom resolver for Play_Video()
+- Added a try/except for dolog so it will silently fail if wrong params are sent through and print the relevant error message to the log.
+
 v.0.9.9.3.4:
 - Added unidecode import for future use
 - Added some mac bootcamp support
