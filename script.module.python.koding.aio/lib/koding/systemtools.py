@@ -172,6 +172,7 @@ def Get_Mac(protocol = 'eth'):
                         cont = True
                     if line.lstrip().startswith('Physical Address') and cont:
                         mac = line.split(':')[1].strip().replace('-',':').replace(' ','')
+                        break
                 else:
                     if line.lstrip().startswith('Description'):
                         if not 'VPN' in line:
@@ -179,16 +180,19 @@ def Get_Mac(protocol = 'eth'):
                     if line.lstrip().startswith('Physical Address') and vpn_check:
                         mac = line.split(':')[1].strip().replace('-',':').replace(' ','')
                         vpn_check = False
+                        break
 
         elif sys.platform == 'darwin': 
             if protocol == 'wifi':
                 for line in os.popen("ifconfig en0 | grep ether"):
                     if line.lstrip().startswith('ether'):
                         mac = line.split('ether')[1].strip().replace('-',':').replace(' ','')
+                        break
             else:
                 for line in os.popen("ifconfig en1 | grep ether"):
                     if line.lstrip().startswith('ether'):
                         mac = line.split('ether')[1].strip().replace('-',':').replace(' ','')
+                        break
 
         elif xbmc.getCondVisibility('System.Platform.Android'):
             try:
@@ -205,22 +209,27 @@ def Get_Mac(protocol = 'eth'):
                 mac = ''
 
         else:
+            mac = ''
             if protocol == 'wifi':
                 for line in os.popen("/sbin/ifconfig"):
                     if line.find('wlan0') > -1: 
-                        mac = line.split()[4]
+                        mac = line.split()[4].strip()
+                        break
                     elif line.startswith('en'):
                         if 'Ethernet'in line and 'HWaddr' in line:
                             mac = line.split('HWaddr')[1].strip()
+                            break
             else:
                for line in os.popen("/sbin/ifconfig"): 
                     if line.find('eth0') > -1: 
-                        mac = line.split()[4] 
+                        mac = line.split()[4].strip()
+                        break
                     elif line.startswith('wl'):
                         if 'Ethernet'in line and 'HWaddr' in line:
                             mac = line.split('HWaddr')[1].strip()
+                            break
         counter += 1
-        xbmc.log('attempt no.%s mac: %s'%(counter,mac),2)
+        xbmc.log('attempt no.%s %s mac: %s'%(counter,protocol,mac),2)
     if len(mac) != 17:
         counter = 0
         while counter < 5 and len(mac) != 17:

@@ -1,3 +1,6 @@
+v.0.9.9.4.1:
+- Small cleanup getting ready for future features
+
 v.0.9.9.4:
 - Added ability to send through a custom resolver for Play_Video()
 - Added a try/except for dolog so it will silently fail if wrong params are sent through and print the relevant error message to the log.
