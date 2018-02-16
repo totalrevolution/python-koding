@@ -1,3 +1,6 @@
+v.0.9.9.4.2:
+- Added Requirements function support for AFTV and other non-rooted devices
+
 v.0.9.9.4.1:
 - Small cleanup getting ready for future features
 

@@ -487,13 +487,27 @@ xbmc_gui = Requirements('xbmc.gui')
 xbmc_python = Requirements('xbmc.python')
 dialog.ok('DEPENDENCIES','[COLOR=dodgerblue]xbmc.gui[/COLOR]  Min: %s  Max: %s'%(xbmc_gui['min'],xbmc_gui['max']),'[COLOR=dodgerblue]xbmc.python[/COLOR]  Min: %s  Max: %s'%(xbmc_python['min'],xbmc_python['max']))
 ~"""
-    from filetools import Text_File
+    from filetools import Physical_Path,Text_File
     from vartools  import Find_In_Text
+    kodi_ver = xbmc.getInfoLabel("System.BuildVersion")[:2]
+# Dictionary used for fallback if local file not accessible (AFTV for example)
+    defaults = {'15':{'xbmc.gui':['5.3.0','5.9.0'], 'xbmc.python':['2.1.0','2.20.0']}, '16':{'xbmc.gui':['5.10.0','5.10.0'], 'xbmc.python':['2.1.0','2.24.0']}, '17':{'xbmc.gui':['5.12.0','5.12.0'], 'xbmc.python':['2.1.0','2.25.0']}}
     root     = 'special://xbmc/addons'
     dep_path = os.path.join(root,dependency,'addon.xml')
     content  = Text_File(dep_path,'r')
-    max_ver  = Find_In_Text(content=content,start='version="',end='"')[1]
-    min_ver  = Find_In_Text(content=content,start='abi="',end='"')[0]
+    try:
+        max_ver  = Find_In_Text(content=content,start='version="',end='"')[1]
+        min_ver  = Find_In_Text(content=content,start='abi="',end='"')[0]
+    except:
+        xbmc.log(repr(defaults[kodi_ver]),2)
+        try:
+            max_ver = defaults[kodi_ver][dependency][1]
+            min_ver = defaults[kodi_ver][dependency][0]
+        except:
+            max_ver = 'unknown'
+            min_ver = 'unknown'
+    xbmc.log('%s min: %s'%(dependency,min_ver),2)
+    xbmc.log('%s max: %s'%(dependency,max_ver),2)
     return {'min':min_ver,"max":max_ver}
 #----------------------------------------------------------------
 # TUTORIAL #
