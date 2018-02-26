@@ -40,13 +40,23 @@ CODE: Addon_Genre([genre, custom_url])
 
 AVAILABLE PARAMS:
     
-    genre  -  By default this is set to 'adult' which will return
-    a dictionary of all known adult add-ons. The genre details are pulled from the
-    Add-on Portal at noobsandnerds.com so you can use any of the supported genre tags
-    listed on this page: http://noobsandnerds.com/latest/?p=3762
+    genre  -  By default this is set to 'adult' which will return a dictionary of all known
+    adult add-ons. We recommend using the genre labels listed below as they are already in use
+    by some add-on developers, however you can of course create your very own genre keys in
+    your custom genre file if you wish.
 
     custom_url  -  If you have your own custom url which returns a dictionary
-    of genres you can enter it here and use that rather than rely on NaN categorisation.
+    of genres and add-ons you can enter it here. The page must adhere to the format shown below.
+
+    Recommended Genre Keys:
+    adult, anime, audiobooks, comedy, comics, documentary, food, gaming, health, howto, kids,
+    livetv, movies, music, news, podcasts, radio, religion, space, sports, subscription,
+    tech, trailers, tvshows, world
+
+    Correct Genre Dictionary Structure:
+    The dictionary must be a dictionary of genres with each genre dictionary containing keys for
+    each add-on ID and the value being the name you want displayed. See below for an example:
+    { "movies":{"plugin.video.mymovie":"My movie add-on","plugin.video.trailers":"My Trailer add-on"}, "sports":{"plugin.video.sports":"Sport Clips"} }
 
 EXAMPLE CODE:
 dialog.ok('ADD-ON GENRES','We will now list all known comedy based add-ons. If you have add-ons installed which you feel should be categorised as supplying comedy but they aren\'t then you can help tag them up correctly via the Add-on Portal at NaN.')
@@ -64,11 +74,13 @@ if comedy_addons:
     from __init__       import converthex
     from filetools      import Text_File
     from systemtools    import Timestamp
+    from vartools       import Merge_Dicts
     from web            import Open_URL
     
     download_new = True
-    local_path   = binascii.hexlify('addons')
+    local_path   = binascii.hexlify('genre_list')
     cookie_path  = "special://profile/addon_data/script.module.python.koding.aio/cookies/"
+    custom_genres= "special://profile/addon_data/script.module.python.koding.aio/genres.txt"
     final_path   = os.path.join(cookie_path,local_path)
     if not xbmcvfs.exists(cookie_path):
         xbmcvfs.mkdirs(cookie_path)
@@ -82,9 +94,7 @@ if comedy_addons:
             download_new = False
 
 # Create new file
-    if download_new:
-        if custom_url == '':
-            custom_url = converthex('687474703a2f2f6e6f6f6273616e646e657264732e636f6d2f6164646f6e732f6164646f6e5f6c6973742e747874')
+    if download_new and custom_url != '':
         addon_list = Open_URL(custom_url)
         Text_File(final_path, "w", addon_list)
 
@@ -92,12 +102,19 @@ if comedy_addons:
     if xbmcvfs.exists(final_path):
         try:
             addon_list = eval( Text_File(final_path, 'r') )
-            return addon_list[genre]
+            addon_list = addon_list[genre]
         except:
             xbmcvfs.delete(final_path)
-            return False
-    else:
-        return False
+            addon_list = {}
+
+    if xbmcvfs.exists(custom_genres):
+        try:
+            custom_list = eval( Text_File(custom_genres, 'r') )
+            custom_list = custom_list[genre]
+            addon_list = Merge_Dicts(addon_list,custom_list)
+        except:
+            pass
+    return addon_list
 #----------------------------------------------------------------
 # TUTORIAL #
 def Addon_Info(id='',addon_id=''):

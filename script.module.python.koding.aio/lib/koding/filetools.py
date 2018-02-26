@@ -149,7 +149,8 @@ IMPORTANT: There was a known bug where some certain compressed tar.gz files can 
 and a bad zipfile will continue to be made until it runs out of space on your storage device. In the unlikely
 event you encounter this issue just add the problematic file(s) to your exclude list. I think this has since
 been fixed since a complete re-code to this function, or at least I've been unable to recreate it. If you
-find this problem is still occuring please let me know (whufclee on noobsandnerds.com forum), thankyou.
+find this problem is still occuring please let me know on the forum at http://totalrevolution.tv/forum
+(user: trevdev), thankyou.
 
 CODE: Compress(src,dst,[compression,parent])
 
@@ -254,7 +255,7 @@ shutil.rmtree(xbmc.translatePath('special://home/test'))
     home_path = Physical_Path('special://home')
     path = path.replace(home_path,'')
     newpath = os.path.join('special://home',path)
-    if path != '' and not xbmcvfs.exists(newpath):
+    if path != '' and not os.path.exists(Physical_Path(newpath)):
         root_path = path.split(os.sep)
         if root_path[-1] == '':
             root_path.pop()

@@ -1,3 +1,10 @@
+v.0.9.9.4.3:
+- Added options to include icon and fanart into the Custom_Dialog function.
+- Added new Merge_Dicts function to merge multiple dictionaries together.
+- Fixed bug with Create_Paths function.
+- Added List_From_Dict function, just a simple function which returns a list of either the keys or values found in a dictionary.
+- Edited the Addon_Genre function, the values were set as keys and vice versa. Value is now the add-on ID and the key is the add-on name.
+
 v.0.9.9.4.2:
 - Added Requirements function support for AFTV and other non-rooted devices
 

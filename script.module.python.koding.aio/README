@@ -1524,7 +1524,8 @@ IMPORTANT: There was a known bug where some certain compressed tar.gz files can 
 and a bad zipfile will continue to be made until it runs out of space on your storage device. In the unlikely
 event you encounter this issue just add the problematic file(s) to your exclude list. I think this has since
 been fixed since a complete re-code to this function, or at least I've been unable to recreate it. If you
-find this problem is still occuring please let me know (whufclee on noobsandnerds.com forum), thankyou.
+find this problem is still occuring please let me know on the forum at http://totalrevolution.tv/forum
+(user: trevdev), thankyou.
 
 	CODE: Compress(src,dst,[compression,parent])
 
@@ -2785,6 +2786,56 @@ any add-on or even the built-in kodi language strings.
 	dialog.ok('SYSTEM STRING','The string [COLOR=dodgerblue]10140[/COLOR] pulled from the default system language resources is:','[COLOR=gold]%s[/COLOR]' % kodi_string)
 	dialog.ok('PYTHON KODING STRING','The string [COLOR=dodgerblue]30825[/COLOR] pulled from the Python Koding language resources is:','[COLOR=gold]%s[/COLOR]' % koding_string)
 		
+------------------------------------------------------------------------------------------
+
+LIST FROM DICTIONARY:
+Send through a dictionary and return a list of either the keys or values.
+Please note: The returned list will be sorted in alphabetical order.
+
+	CODE: List_From_Dict(mydict,[use_key])
+
+	AVAILABLE PARAMS:
+
+	    (*) mydict  -  This is the dictionary (original data) you want to traverse through.
+
+	    use_key  -  By default this is set to True and a list of all your dictionary keys
+	    will be returned. Set to False if you'd prefer to have a list of the values returned.
+
+	EXAMPLE CODE:
+	-------------
+		raw_data = {'test1':'one','test2':'two','test3':'three','test4':'four','test5':'five'}
+		mylist1 = koding.List_From_Dict(mydict=raw_data)
+		mylist2 = koding.List_From_Dict(mydict=raw_data,use_key=False)
+		koding.Text_Box('LIST_FROM_DICT','Original dictionary: [COLOR dodgerblue]%s[/COLOR][CR][CR]Returned List (use_key=True): [COLOR dodgerblue]%s[/COLOR][CR]Returned List (use_key=False): [COLOR dodgerblue]%s[/COLOR]'%(raw_data,mylist1,mylist2))
+
+------------------------------------------------------------------------------------------
+
+MERGE DICTIONARIES:
+Send through any number of dictionaries and get a return of one merged dictionary.
+Please note: If you have duplicate keys the value will be overwritten by the final
+dictionary to be checked. So if you send through dicts a-f and the same key exists
+in dicts a,e,f the final value for that key would be whatever is set in 'f'.
+
+	CODE: Merge_Dicts(*dict_args)
+
+	AVAILABLE PARAMS:
+
+	    (*) *dict_args  -  Enter as many dictionaries as you want, these will be merged
+	    into one final dictionary. Please send each dictionary through as a new paramater.
+
+	EXAMPLE CODE:
+	-------------
+		dict1 = {'1':'one','2':'two'}
+		dict2 = {'3':'three','4':'four','5':'five'}
+		dict3 = {'6':'six','7':'seven'}
+		dict4 = {'1':'three','8':'eight'}
+
+		mytext = 'Original Dicts:\ndict1 = %s\ndict2 = %s\ndict3 = %s\ndict4 = %s\n\n'%(repr(dict1),repr(dict2),repr(dict3),repr(dict4))
+		mytext += 'Merged dictionaries (1-3): %s\n\n'%repr(koding.Merge_Dicts(dict1,dict2,dict3))
+		mytext += 'Merged dictionaries (1-4): %s\n\n'%repr(koding.Merge_Dicts(dict1,dict2,dict3,dict4))
+		mytext += "[COLOR = gold]IMPORTANT:[/COLOR]\nNotice how on the last run the key '1'now has a value of three.\nThis is because dict4 also contains that same key."
+		Text_Box('Merge_Dicts',mytext)
+
 ------------------------------------------------------------------------------------------
 
 MD5 CHECK:

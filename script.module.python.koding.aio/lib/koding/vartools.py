@@ -477,6 +477,36 @@ dialog.ok('ID GENERATOR','Password generated:', '', '[COLOR=dodgerblue]%s[/COLOR
     return ''.join(random.choice(chars) for _ in range(size))
 #---------------------------------------------------------------------------------------------------
 # TUTORIAL #
+def List_From_Dict(mydict={},use_key=True):
+    """
+Send through a dictionary and return a list of either the keys or values.
+Please note: The returned list will be sorted in alphabetical order.
+
+CODE: List_From_Dict(mydict,[use_key])
+
+AVAILABLE PARAMS:
+
+    (*) mydict  -  This is the dictionary (original data) you want to traverse through.
+
+    use_key  -  By default this is set to True and a list of all your dictionary keys
+    will be returned. Set to False if you'd prefer to have a list of the values returned.
+
+EXAMPLE CODE:
+raw_data = {'test1':'one','test2':'two','test3':'three','test4':'four','test5':'five'}
+mylist1 = koding.List_From_Dict(mydict=raw_data)
+mylist2 = koding.List_From_Dict(mydict=raw_data,use_key=False)
+koding.Text_Box('LIST_FROM_DICT','Original dictionary: [COLOR dodgerblue]%s[/COLOR][CR][CR]Returned List (use_key=True): [COLOR dodgerblue]%s[/COLOR][CR]Returned List (use_key=False): [COLOR dodgerblue]%s[/COLOR]'%(raw_data,mylist1,mylist2))
+~"""
+    pos = 1
+    if use_key:
+        pos = 0
+    final_list = []
+    for item in mydict.items():
+        if item[0]!='' and item[1]!='':
+            final_list.append(item[pos])
+    return sorted(final_list)
+#---------------------------------------------------------------------------------------------------
+# TUTORIAL #
 def md5_check(src,string=False):
     """
 Return the md5 value of string/file/directory, this will return just one unique value.
@@ -541,6 +571,39 @@ dialog.ok('md5 String Check', 'The md5 value of your string:', '[COLOR=dodgerblu
             return -2
 
         return SHAhash.hexdigest()
+#----------------------------------------------------------------
+# TUTORIAL #
+def Merge_Dicts(*dict_args):
+    """
+Send through any number of dictionaries and get a return of one merged dictionary.
+Please note: If you have duplicate keys the value will be overwritten by the final
+dictionary to be checked. So if you send through dicts a-f and the same key exists
+in dicts a,e,f the final value for that key would be whatever is set in 'f'.
+
+CODE: Merge_Dicts(*dict_args)
+
+AVAILABLE PARAMS:
+
+    (*) *dict_args  -  Enter as many dictionaries as you want, these will be merged
+    into one final dictionary. Please send each dictionary through as a new paramater.
+
+EXAMPLE CODE:
+dict1 = {'1':'one','2':'two'}
+dict2 = {'3':'three','4':'four','5':'five'}
+dict3 = {'6':'six','7':'seven'}
+dict4 = {'1':'three','8':'eight'}
+
+mytext = 'Original Dicts:\ndict1 = %s\ndict2 = %s\ndict3 = %s\ndict4 = %s\n\n'%(repr(dict1),repr(dict2),repr(dict3),repr(dict4))
+mytext += 'Merged dictionaries (1-3): %s\n\n'%repr(koding.Merge_Dicts(dict1,dict2,dict3))
+mytext += 'Merged dictionaries (1-4): %s\n\n'%repr(koding.Merge_Dicts(dict1,dict2,dict3,dict4))
+mytext += "[COLOR = gold]IMPORTANT:[/COLOR]\nNotice how on the last run the key '1'now has a value of three.\nThis is because dict4 also contains that same key."
+Text_Box('Merge_Dicts',mytext)
+~"""
+    result = {}
+    for dictionary in dict_args:
+        if Data_Type(dictionary)=='dict':
+            result.update(dictionary)
+    return result
 #----------------------------------------------------------------
 # TUTORIAL #
 def Parse_XML(source, block, tags):
@@ -641,7 +704,7 @@ proxies = koding.Table_Convert(url='https://free-proxy-list.net', contents={"ip"
 mytext = '[COLOR dodgerblue]Here are some proxies:[/COLOR]\n'
 for item in proxies:
     mytext += '\nIP: %s\nPort: %s\n[COLOR steelblue]----------------[/COLOR]'%(item['ip'],item['port'])
-Text_Box('MASTER PROXY LIST',mytext)
+koding.Text_Box('MASTER PROXY LIST',mytext)
 ~"""
     from web import Open_URL
     from BeautifulSoup import BeautifulSoup
