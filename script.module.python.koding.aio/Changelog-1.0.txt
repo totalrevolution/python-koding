@@ -1,3 +1,7 @@
+v.1.0:
+- Stable release, only bug reported in past few months was custom fanart not showing for the Add_Dir funtion so this has now been fixed.
+- Cleaned up some old unused strings.
+
 v.0.9.9.4.3:
 - Added options to include icon and fanart into the Custom_Dialog function.
 - Added new Merge_Dicts function to merge multiple dictionaries together.
